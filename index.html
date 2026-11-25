@@ -84,6 +84,10 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .sl input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #141414}
 .off{opacity:.3;pointer-events:none}
 #note{font-size:13px;color:#8a8a8a;margin:2px 0 4px}
+.seg{display:flex;gap:8px;margin:0 0 6px}
+.seg button{flex:1;height:44px;border-radius:12px;border:1px solid #303030;background:#242424;color:#ddd;font-size:14px;cursor:pointer}
+.seg button.on{background:#ececec;color:#141414;border-color:#ececec}
+#joyW{display:none}
 .btns{display:flex;gap:10px;margin:14px 0 8px}
 .btns button{flex:1;height:44px;border-radius:12px;border:1px solid #303030;background:#242424;color:#e6e6e6;font-size:15px;cursor:pointer}
 .btns button.pri{background:#ececec;color:#141414;border-color:#ececec}
@@ -116,8 +120,10 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
   </div>
   <div class="ttl">Краска</div>
   <div class="row"><label>Текучесть<small>воск → масло</small></label><div class="sl"><div class="tr"></div><input type="range" id="flow" min="0.1" max="1" step="0.01"></div></div>
-  <div class="row"><label>Высыхание<small id="tauV"></small></label><div class="sl"><div class="tr"></div><input type="range" id="dry" min="3" max="60" step="1"></div></div>
+  <div class="row"><label>Высыхание<small id="tauV"></small></label><div class="sl"><div class="tr"></div><input type="range" id="dryS" min="3" max="60" step="1"></div></div>
   <div class="row"><label>Струя<small>тонкая → толстая</small></label><div class="sl"><div class="tr"></div><input type="range" id="bsz" min="0.5" max="2" step="0.01"></div></div>
+  <div class="ttl">Наклон</div>
+  <div class="seg"><button id="tiltS">Датчик телефона</button><button id="tiltJ">Джойстик</button></div>
   <div class="btns"><button id="clr">Очистить</button><button class="pri" id="done">Готово</button></div>
 </div>
 <script>
@@ -445,9 +451,10 @@ void main(){
 
 (()=>{
 const cv=document.getElementById('cv');
-let TRAV=27;
-function layout(){const VH=innerHeight,dock=Math.round(Math.min(214,Math.max(170,VH*0.26))),sw=Math.round(Math.min(36,Math.max(28,(dock-96)/3))),
-  gap=Math.round(sw*0.3),joy=Math.round(Math.min(108,Math.max(90,dock-96)));
+let TRAV=27,JOY=false;try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.cfg&&d.cfg.tilt==='joy')JOY=true}catch(e){}
+function layout(){const VH=innerHeight;let dock,sw,gap,joy=90;
+  if(JOY){dock=Math.round(Math.min(214,Math.max(170,VH*0.26)));sw=Math.round(Math.min(36,Math.max(28,(dock-96)/3)));gap=Math.round(sw*0.3);joy=Math.round(Math.min(108,Math.max(90,dock-96)))}
+  else{dock=Math.round(Math.min(186,Math.max(158,VH*0.2)));sw=Math.round(Math.min(40,Math.max(28,Math.floor((innerWidth*0.54-12)/6.2))));gap=Math.round(sw*0.3)}
   const s=document.documentElement.style;s.setProperty('--dock',dock+'px');s.setProperty('--sw',sw+'px');s.setProperty('--gap',gap+'px');s.setProperty('--joy',joy+'px');
   TRAV=joy*0.3;window.__lay={dock,sw,gap,joy}}
 layout();addEventListener('resize',layout);let GL=null;try{GL=makeGL(cv)}catch(e){console.warn(e);GL=null}
@@ -495,7 +502,7 @@ const PRESETS=[
   PH('Material','#f44336 #ffc107 #4caf50 #2196f3 #9c27b0'),
   PH('Кислота','#ccff00 #ff3cac #784ba0 #2b86c5 #00ffd5'),
 ];
-let slots,sel=0,cfg={flow:0.42,dry:20,bsz:1},ext=[{t:0,s:0,v:250/255},{t:0,s:0,v:.02}];  // ext = custom white, custom black
+let slots,sel=0,cfg={flow:0.42,dry:20,bsz:1,tilt:'sensor'},ext=[{t:0,s:0,v:250/255},{t:0,s:0,v:.02}];  // ext = custom white, custom black
 try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.slots&&d.slots.length===5){slots=d.slots;Object.assign(cfg,d.cfg||{});delete cfg.tau;if(d.ext&&d.ext.length===2)ext=d.ext}}catch(e){}
 if(!slots)slots=PRESETS[0][1].map(o=>({...o}));
 const save=()=>{try{localStorage.setItem('pour1',JSON.stringify({slots,cfg,ext}))}catch(e){}};
@@ -536,9 +543,9 @@ function refresh(){
   el('b0').style.background='linear-gradient(90deg,'+st.join(',')+')';
   el('b1').style.background='linear-gradient(90deg,'+css(hsv(o.t*HMAX,R.s[0],o.v))+','+css(hsv(o.t*HMAX,R.s[1],o.v))+')';
   el('b2').style.background='linear-gradient(90deg,'+css(hsv(o.t*HMAX,o.s,R.v[0]))+','+css(hsv(o.t*HMAX,o.s,R.v[1]))+')';
-  el('flow').value=cfg.flow;el('dry').value=cfg.dry;el('bsz').value=cfg.bsz;el('tauV').textContent='застывает за ~'+cfg.dry+' с'}
+  el('flow').value=cfg.flow;el('dryS').value=cfg.dry;el('bsz').value=cfg.bsz;el('tauV').textContent='застывает за ~'+cfg.dry+' с'}
 ['t','s','v'].forEach(k=>el(k).addEventListener('input',e=>{const o=sel<5?slots[sel]:sel<7?ext[sel-5]:null;if(o){o[k]=+e.target.value;refresh();save()}}));
-['flow','dry','bsz'].forEach(k=>el(k).addEventListener('input',e=>{cfg[k]=+e.target.value;applyCfg();save();el('tauV').textContent='застывает за ~'+cfg.dry+' с'}));
+[['flow','flow'],['dryS','dry'],['bsz','bsz']].forEach(([id,k])=>el(id).addEventListener('input',e=>{cfg[k]=+e.target.value;applyCfg();save();el('tauV').textContent='застывает за ~'+cfg.dry+' с'}));
 function applyCfg(){if(sim){sim.flow=cfg.flow;sim.tau=cfg.dry/3}}  // paint sets after ~3 time constants
 const sheet=el('sheet'),isOpen=()=>sheet.classList.contains('open');
 function openSheet(v){if(v)menu.classList.remove('open');sheet.classList.toggle('open',v);el('back').classList.toggle('open',v)}
@@ -546,15 +553,16 @@ el('gear').onclick=()=>openSheet(!isOpen());el('done').onclick=()=>openSheet(fal
 el('clr').onclick=()=>{for(const a of [sim.H,sim.R,sim.G,sim.B,sim.Wt,sim.D,sim.HD,sim.RD,sim.GD,sim.BD,sim.WD,sim.FX,sim.FY])a.fill(0);openSheet(false)};
 // ---------- movable palette ----------
 const pal=el('pal');
-let PS={cols:3,x:null,y:null};
-try{const d=JSON.parse(localStorage.getItem('pour-pal6')||'null');if(d)PS=d}catch(e){}
-const savePS=()=>{try{localStorage.setItem('pour-pal6',JSON.stringify(PS))}catch(e){}};
+let PS={cols:null,x:null,y:null};
+try{const d=JSON.parse(localStorage.getItem('pour-pal7')||'null');if(d)PS=d}catch(e){}
+const savePS=()=>{try{localStorage.setItem('pour-pal7',JSON.stringify(PS))}catch(e){}};
 const ITEMS=9;
 const LAY={get sw(){return window.__lay.sw},get gap(){return window.__lay.gap}};
 function placePal(snap){
+  if(PS.cols==null)PS.cols=JOY?3:5;
   pal.style.gridTemplateColumns='repeat('+PS.cols+','+LAY.sw+'px)';
   const w=pal.offsetWidth,h=pal.offsetHeight,VW=innerWidth,VH=innerHeight,m=30;
-  if(PS.x===null){PS.x=(VW-w)/2;PS.y=VH-h-30}
+  if(PS.x===null){PS.x=JOY?(VW-w)/2:Math.max(m,(VW-w)/2-20);PS.y=VH-h-30}
   let x=Math.min(Math.max(m,PS.x),VW-w-m),y=Math.min(Math.max(m,PS.y),VH-h-m);
   if(snap){const S=56;if(x<S)x=m;if(VW-w-x<S)x=VW-w-m;if(y<S)y=m;if(VH-h-y<S)y=VH-h-m}
   PS.x=x;PS.y=y;pal.style.left=x+'px';pal.style.top=y+'px'}
@@ -605,6 +613,24 @@ dragOn(joy,(dx,dy,st,ev)=>{const r=joy.getBoundingClientRect();setTilt((ev.clien
   ()=>{joy.classList.remove('drag')},
   e=>{joy.classList.add('drag');const now=performance.now();if(now-lastTap<300){setTilt(0,0);lastTap=0;return}lastTap=now;
     const r=joy.getBoundingClientRect();setTilt((e.clientX-r.left-r.width/2)/TRAV,(e.clientY-r.top-r.height/2)/TRAV)});
+// ---------- tilt: phone sensor (default) or on-screen joystick ----------
+let sx=0,sy=0,tsx=0,tsy=0,sensorSeen=false,sensorDead=false,askedPerm=false;
+function onMotion(e){const g=e.accelerationIncludingGravity;if(!g||g.x==null||g.y==null)return;
+  if(!sensorSeen){sensorSeen=true;if(sensorDead){sensorDead=false;applyMode(true)}}
+  const fx=-g.x/9.81,fy=g.y/9.81,q=(((screen.orientation&&screen.orientation.angle)||window.orientation||0)%360+360)%360;
+  let x=fx,y=fy;if(q===90){x=fy;y=-fx}else if(q===180){x=-fx;y=-fy}else if(q===270){x=-fy;y=fx}
+  const l=Math.hypot(x,y);if(l>1){x/=l;y/=l}sx=x;sy=y}
+addEventListener('devicemotion',onMotion);
+function askSensor(){if(askedPerm)return;askedPerm=true;try{if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission==='function')DeviceMotionEvent.requestPermission().catch(()=>{})}catch(e){}}
+function refreshSeg(){el('tiltS').classList.toggle('on',cfg.tilt!=='joy');el('tiltJ').classList.toggle('on',cfg.tilt==='joy')}
+function applyMode(reset){
+  JOY=cfg.tilt==='joy'||sensorDead;el('joyW').style.display=JOY?'block':'none';layout();setTilt(0,0);
+  if(reset){PS.cols=null;PS.x=null;PS.y=null;try{localStorage.removeItem('pour-pal7')}catch(e){}}
+  placePal(false);refreshSeg();requestAnimationFrame(()=>dispatchEvent(new Event('resize')))}
+el('tiltS').onclick=()=>{cfg.tilt='sensor';sensorDead=!sensorSeen&&sensorDead;save();askSensor();applyMode(true);if(!sensorSeen)setTimeout(()=>{if(!sensorSeen&&cfg.tilt==='sensor'){sensorDead=true;applyMode(true)}},2500)};
+el('tiltJ').onclick=()=>{cfg.tilt='joy';save();applyMode(true)};
+setTimeout(()=>{if(!sensorSeen&&cfg.tilt!=='joy'){sensorDead=true;applyMode(true)}},2500);
+applyMode(false);
 // ---------- canvas sizes ----------
 const SIZES=[
   {id:'1:1',n:'1:1',w:1080,h:1080},{id:'4:5',n:'4:5',w:1080,h:1350},{id:'3:4',n:'3:4',w:1080,h:1440},
@@ -706,7 +732,7 @@ function updPair(){
   const bx=(pair.b[0]-BW/2)*view.z,by=(pair.b[1]-BH/2)*view.z;
   view.ox=mx-cv.clientWidth/2-(bx*c-by*s);view.oy=my-cv.clientHeight/2-(bx*s+by*c);
   el('reset').classList.add('show')}
-cv.addEventListener('pointerdown',e=>{if(!sim)return;cv.setPointerCapture(e.pointerId);
+cv.addEventListener('pointerdown',e=>{askSensor();if(!sim)return;cv.setPointerCapture(e.pointerId);
   const [sx,sy]=scr(e),now=performance.now(),p={sx,sy,x0:sx,y0:sy,t:now,role:'pending'};ptr.set(e.pointerId,p);
   if(!pair)for(const [id,q] of ptr)if(id!==e.pointerId&&q.role==='pending'&&now-q.t<170){startPair(id,q,e.pointerId,p);break}});
 cv.addEventListener('pointermove',e=>{const p=ptr.get(e.pointerId);if(!p)return;[p.sx,p.sy]=scr(e);
@@ -736,6 +762,7 @@ function frame(now){
     const now2=performance.now();
     for(const [id,p] of ptr)if(p.role==='pending'&&now2-p.t>110)startPour(id,p);
     for(const a of act.values())pourFrame(a,dt);
+    if(cfg.tilt!=='joy'&&sensorSeen){const k=Math.min(1,dt*9),dz=v=>Math.abs(v)<0.04?0:v;tsx+=(dz(sx)-tsx)*k;tsy+=(dz(sy)-tsy)*k;tilt=[tsx,tsy]}
     {const c=Math.cos(view.a),s=Math.sin(view.a);sim.tx=tilt[0]*c+tilt[1]*s;sim.ty=-tilt[0]*s+tilt[1]*c}  // tilt is fixed to the screen
     if(drying){dryT+=dt;const g=Math.min(1,Math.pow(dryT/1.8,2)),rate=0.4+7*g;   // accelerating dryer
       const k=Math.exp(-rate*dt),D=sim.D;for(let i=0;i<D.length;i++)D[i]*=k;settle(sim);
