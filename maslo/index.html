@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#141414">
+<title>Масло</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+#app{position:fixed;inset:0}
+#wrap{position:absolute;inset:0;padding:8px}
+#cv{width:100%;height:100%;display:block;border-radius:16px;touch-action:none;background:#ece8e0}
+#hint{position:absolute;left:0;right:70px;top:38%;text-align:center;color:rgba(40,36,30,.55);font-size:14px;pointer-events:none;transition:opacity .6s;padding:0 30px}
+#pal{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:11px;padding:11px 9px;background:rgba(22,22,22,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:26px;z-index:2;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.sw{width:36px;height:36px;border-radius:50%;border:none;padding:0;position:relative;flex:none;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.sw.on::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid #ececec}
+.sep{height:1px;width:26px;background:#3a3a3a;flex:none}
+.ic{width:38px;height:42px;border-radius:12px;background:#202020;border:1px solid #2e2e2e;color:#ddd;display:grid;place-items:center;flex:none;cursor:pointer;padding:0}
+.ic svg{width:20px;height:20px}
+#back{position:absolute;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s;z-index:3}
+#back.open{opacity:1;pointer-events:auto}
+#sheet{position:absolute;left:12px;right:12px;top:50%;max-width:460px;margin:0 auto;max-height:84%;overflow-y:auto;background:#1a1a1a;border-radius:20px;padding:16px 16px 8px;transform:translateY(-50%) scale(.96);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:4;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#sheet.open{opacity:1;pointer-events:auto;transform:translateY(-50%)}
+.ttl{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#8a8a8a;margin:2px 0 10px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.chip{flex:none;display:flex;gap:6px;align-items:center;background:#242424;border:1px solid #303030;border-radius:999px;padding:7px 12px 7px 8px;color:#ddd;font-size:13px;cursor:pointer}
+.chip i{display:flex}.chip i b{width:12px;height:12px;border-radius:50%;margin-right:-3px;box-shadow:0 0 0 1.5px #242424}
+.row{display:flex;align-items:center;gap:12px;margin:6px 0}
+.row label{width:112px;font-size:14px;color:#cfcfcf;flex:none}
+.sl{position:relative;height:40px;flex:1}
+.sl .tr{position:absolute;left:0;right:0;top:15px;height:10px;border-radius:5px;background:#333}
+.sl input{position:absolute;inset:0;width:100%;height:40px;margin:0;background:transparent;-webkit-appearance:none;appearance:none;touch-action:pan-y}
+.sl input::-webkit-slider-runnable-track{background:transparent;height:40px}
+.sl input::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:7px;border-radius:50%;background:#fff;border:3px solid #141414;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.sl input::-moz-range-track{background:transparent}
+.sl input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #141414}
+#ed.off{opacity:.3;pointer-events:none}
+#note{font-size:13px;color:#8a8a8a;margin:4px 0 8px;min-height:17px}
+.btns{display:flex;gap:10px;margin:12px 0 8px}
+.btns button{flex:1;height:44px;border-radius:12px;border:1px solid #303030;background:#242424;color:#e6e6e6;font-size:15px;cursor:pointer}
+.btns button.pri{background:#ececec;color:#141414;border-color:#ececec}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="wrap"><canvas id="cv"></canvas><div id="hint">Рисуй пальцами. Каждый палец — свой цвет.<br>Нажми на выбранный цвет справа ещё раз,<br>чтобы его настроить.</div></div>
+  <div id="pal"><div id="sws" style="display:flex;flex-direction:column;gap:11px;align-items:center"></div>
+    <button class="ic" id="gear" aria-label="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+  </div>
+  <div id="back"></div>
+    <div id="sheet">
+      <div class="ttl">Палитры</div>
+      <div class="chips" id="chips"></div>
+      <div class="ttl">Цвет</div>
+      <div id="ssw" style="display:flex;gap:10px;align-items:center;margin:4px 0 10px;padding-left:4px"></div>
+      <div id="note"></div>
+      <div id="ed">
+        <div class="row"><label>Температура</label><div class="sl"><div class="tr" id="b0"></div><input type="range" id="t" min="0" max="1" step="0.002"></div></div>
+        <div class="row"><label>Насыщенность</label><div class="sl"><div class="tr" id="b1"></div><input type="range" id="s" min="0" max="1" step="0.002"></div></div>
+        <div class="row"><label>Яркость</label><div class="sl"><div class="tr" id="b2"></div><input type="range" id="v" min="0.06" max="1" step="0.002"></div></div>
+      </div>
+      <div class="ttl" style="margin-top:12px">Краска</div>
+      <div class="row"><label>Текучесть</label><div class="sl"><div class="tr" style="background:linear-gradient(90deg,#3a3a3a,#9a9a9a)"></div><input type="range" id="flow" min="0" max="1" step="0.01"></div></div>
+      <div class="btns"><button id="clr">Очистить холст</button><button class="pri" id="done">Готово</button></div>
+    </div>
+</div>
+<script>
+// ---- gel paint simulation (mass-conserving, no texture) ----
+function sstep(a,b,x){let t=(x-a)/(b-a);t=t<0?0:t>1?1:t;return t*t*(3-2*t)}
+function makeSim(nx,ny){
+  const N=nx*ny,f=()=>new Float32Array(N);
+  return {nx,ny,N,H:f(),R:f(),G:f(),B:f(),Wt:f(),nH:f(),nR:f(),nG:f(),nB:f(),nW:f(),
+    Hs:f(),FX:f(),FY:f(),U:f(),V:f(),U2:f(),V2:f(),M:f(),flow:0.35};
+}
+// col = {A:[ar,ag,ab], w:0|1}; new paint covers what is underneath
+function deposit(s,gx,gy,r,amt,col){
+  const {nx,ny,H,R,G,B,Wt}=s,A=col.A,tw=col.w;
+  const x0=Math.max(0,Math.floor(gx-r)),x1=Math.min(nx-1,Math.ceil(gx+r));
+  const y0=Math.max(0,Math.floor(gy-r)),y1=Math.min(ny-1,Math.ceil(gy+r));
+  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
+    const d=Math.hypot(x-gx,y-gy)/r;if(d>=1)continue;
+    const a=amt*(0.5+0.5*Math.cos(d*Math.PI)),i=y*nx+x,h0=H[i];
+    let f=1,mr=0,mg=0,mb=0,mw=0;
+    if(h0>1e-4){f=Math.min(1,a*2/(0.25*h0+a*2));const ih=1/h0;mr=R[i]*ih;mg=G[i]*ih;mb=B[i]*ih;mw=Wt[i]*ih}
+    const h1=h0+Math.min(a,Math.max(0,3.2-h0));if(h1<1e-5)continue;
+    H[i]=h1;R[i]=h1*((1-f)*mr+f*A[0]);G[i]=h1*((1-f)*mg+f*A[1]);B[i]=h1*((1-f)*mb+f*A[2]);Wt[i]=h1*((1-f)*mw+f*tw);
+  }
+}
+// finger acts like a spatula: paint under it follows its motion
+function drag(s,gx,gy,r,vx,vy){
+  const {nx,ny,FX,FY}=s;
+  const x0=Math.max(0,Math.floor(gx-r)),x1=Math.min(nx-1,Math.ceil(gx+r));
+  const y0=Math.max(0,Math.floor(gy-r)),y1=Math.min(ny-1,Math.ceil(gy+r));
+  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
+    const d=Math.hypot(x-gx,y-gy)/r;if(d>=1)continue;
+    const w=(0.5+0.5*Math.cos(d*Math.PI))*0.8,i=y*nx+x;
+    FX[i]+= (vx-FX[i])*w;FY[i]+=(vy-FY[i])*w;
+  }
+}
+function step(s){
+  const {nx,ny,H,Hs,FX,FY,U,V}=s,flow=s.flow,MX=0.45;
+  for(let y=0;y<ny;y++){const yu=y>0?-nx:0,yd=y<ny-1?nx:0;
+    for(let x=0;x<nx;x++){const i=y*nx+x,xl=x>0?-1:0,xr=x<nx-1?1:0;
+      Hs[i]=(H[i]*4+H[i+xl]+H[i+xr]+H[i+yu]+H[i+yd])*0.125}}
+  const M=s.M;
+  for(let y=0;y<ny;y++){const yu=y>0?-nx:0,yd=y<ny-1?nx:0;
+    for(let x=0;x<nx;x++){const i=y*nx+x,xl=x>0?-1:0,xr=x<nx-1?1:0;
+      const h=H[i];let u=0,v=0,m=0;
+      if(h>1e-4){
+        const gx=(Hs[i+xr]-Hs[i+xl])*0.5,gy=(Hs[i+yd]-Hs[i+yu])*0.5;
+        m=sstep(0.5,1.5,h);                 // gel: thin paint holds, thick paint yields
+        v=flow*m*0.22*Math.min(h,2.6)*sstep(0,14,ny-1-y);  // gravity, soft floor
+        const pk=0.18+0.25*sstep(1.5,3,h);  // thick heaps spread into round mounds
+        u=-pk*m*gx;v-=pk*m*gy;
+      }
+      M[i]=m;U[i]=u;V[i]=v;
+    }}
+  // viscosity: mobile paint moves together (no thin threads), thin film stays
+  for(let pass=0;pass<2;pass++){const U2=s.U2,V2=s.V2;
+    for(let y=0;y<ny;y++){const yu=y>0?-nx:0,yd=y<ny-1?nx:0;
+      for(let x=0;x<nx;x++){const i=y*nx+x,xl=x>0?-1:0,xr=x<nx-1?1:0;
+        const mi=M[i];if(mi<=0){U2[i]=0;V2[i]=0;continue}
+        const wc=2*mi,a=M[i+xl],b=M[i+xr],c=M[i+yu],d=M[i+yd],n=wc+a+b+c+d;
+        U2[i]=(U[i]*wc+U[i+xl]*a+U[i+xr]*b+U[i+yu]*c+U[i+yd]*d)/n;
+        V2[i]=(V[i]*wc+V[i+xl]*a+V[i+xr]*b+V[i+yu]*c+V[i+yd]*d)/n}}
+    U.set(U2);V.set(V2)}
+  for(let i=0;i<s.N;i++){let u=U[i]+FX[i],v=V[i]+FY[i];
+    U[i]=u>MX?MX:u<-MX?-MX:u;V[i]=v>MX?MX:v<-MX?-MX:v;FX[i]*=0.8;FY[i]*=0.8}
+  const {nH,nR,nG,nB,nW,R,G,B,Wt}=s;
+  nH.fill(0);nR.fill(0);nG.fill(0);nB.fill(0);nW.fill(0);
+  const XM=nx-1.0001,YM=ny-1.0001;
+  for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){
+    const i=y*nx+x,h0=H[i];if(h0<=0)continue;
+    const sp=Math.abs(U[i])+Math.abs(V[i]);
+    if(sp<1e-5){nH[i]+=h0;nR[i]+=R[i];nG[i]+=G[i];nB[i]+=B[i];nW[i]+=Wt[i];continue}
+    // a moving drop leaves a thin film behind, so drips run out and stop
+    const fin=Math.abs(FX[i])+Math.abs(FY[i])>0.02?0:1;
+    const st=Math.min(h0*0.9,0.3*sp*fin),kf=st/h0,km=1-kf;
+    nH[i]+=st;nR[i]+=R[i]*kf;nG[i]+=G[i]*kf;nB[i]+=B[i]*kf;nW[i]+=Wt[i]*kf;
+    const h=h0*km;
+    let tx=x+U[i],ty=y+V[i];
+    tx=tx<0?0:tx>XM?XM:tx;ty=ty<0?0:ty>YM?YM:ty;
+    const x0=tx|0,y0=ty|0,fx=tx-x0,fy=ty-y0,j=y0*nx+x0;
+    const w00=(1-fx)*(1-fy),w10=fx*(1-fy),w01=(1-fx)*fy,w11=fx*fy;
+    const r=R[i]*km,g=G[i]*km,b=B[i]*km,w=Wt[i]*km;
+    nH[j]+=h*w00;nH[j+1]+=h*w10;nH[j+nx]+=h*w01;nH[j+nx+1]+=h*w11;
+    nR[j]+=r*w00;nR[j+1]+=r*w10;nR[j+nx]+=r*w01;nR[j+nx+1]+=r*w11;
+    nG[j]+=g*w00;nG[j+1]+=g*w10;nG[j+nx]+=g*w01;nG[j+nx+1]+=g*w11;
+    nB[j]+=b*w00;nB[j+1]+=b*w10;nB[j+nx]+=b*w01;nB[j+nx+1]+=b*w11;
+    nW[j]+=w*w00;nW[j+1]+=w*w10;nW[j+nx]+=w*w01;nW[j+nx+1]+=w*w11;
+  }
+  // surface tension: mobile paint smooths itself (no ridges, round edges)
+  {const H=s.nH,R=s.nR,G=s.nG,B=s.nB,W=s.nW;
+   for(let pass=0;pass<2;pass++)
+   for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){const i=y*nx+x,mi=M[i];if(mi<=0)continue;
+     for(let d=0;d<2;d++){const j=d?i+nx:i+1;if(d?y>=ny-1:x>=nx-1)continue;
+       const mm=Math.min(mi,M[j]);if(mm<=0)continue;
+       let f=0.12*mm*(H[i]-H[j]);const src=f>0?i:j,hs=H[src];if(hs<=1e-6)continue;
+       const k=Math.abs(f)/hs;if(k>0.25){f*=0.25/k}
+       const q=Math.abs(f)/hs,dst=src===i?j:i;
+       const r=R[src]*q,g=G[src]*q,b=B[src]*q,w=W[src]*q;
+       H[src]-=Math.abs(f);H[dst]+=Math.abs(f);R[src]-=r;R[dst]+=r;G[src]-=g;G[dst]+=g;B[src]-=b;B[dst]+=b;W[src]-=w;W[dst]+=w}}}
+  let t;
+  t=s.H;s.H=s.nH;s.nH=t;t=s.R;s.R=s.nR;s.nR=t;t=s.G;s.G=s.nG;s.nG=t;t=s.B;s.B=s.nB;s.nB=t;t=s.Wt;s.Wt=s.nW;s.nW=t;
+}
+const LT=(()=>{const l=[-0.45,-0.6,0.66],n=Math.hypot(...l),L=l.map(v=>v/n);
+  const h=[L[0],L[1],L[2]+1],m=Math.hypot(...h);return{L,Hv:h.map(v=>v/m)}})();
+function render(s,px){
+  const {nx,ny,H,R,G,B,Wt}=s,Hs=s.Hs,L=LT.L,Hv=LT.Hv;
+  for(let y=0;y<ny;y++){const yu=y>0?-nx:0,yd=y<ny-1?nx:0;
+    for(let x=0;x<nx;x++){
+      const i=y*nx+x,j=i*4,xl=x>0?-1:0,xr=x<nx-1?1:0;
+      // light smoothing of height for clean normals
+      const hc=(Hs[i]*2+Hs[i+xl]+Hs[i+xr]+Hs[i+yu]+Hs[i+yd])/6;
+      const hl=Hs[i+xl],hr=Hs[i+xr],hu=Hs[i+yu],hd=Hs[i+yd];
+      let r=236,g=232,b=224;
+      const h=H[i];
+      // soft contact shadow from paint up-left
+      const xs=x>2?x-2:0,ys=y>3?y-3:0,occ=Hs[ys*nx+xs]-hc;
+      let sh=occ*0.22;sh=sh<0?0:sh>0.32?0.32:sh;
+      if(h>0.002){
+        const ih=1/h;let w=Wt[i]*ih;w=w>1?1:w;
+        const hcol=h-Wt[i];
+        let cr=250,cg=250,cb=250;
+        if(hcol>0.002){const k=1/hcol;cr=Math.exp(-R[i]*k)*255;cg=Math.exp(-G[i]*k)*255;cb=Math.exp(-B[i]*k)*255;
+          cr=cr*(1-w)+250*w;cg=cg*(1-w)+250*w;cb=cb*(1-w)+250*w}
+        const dp=1-0.12*Math.min(h,3)/3;cr*=dp;cg*=dp;cb*=dp;
+        const a=1-Math.exp(-h*(6+4*w));
+        r=r*(1-a)+cr*a;g=g*(1-a)+cg*a;b=b*(1-a)+cb*a;
+        const K=1.7,nX=-(hr-hl)*0.5*K,nY=-(hd-hu)*0.5*K,nl=1/Math.sqrt(nX*nX+nY*nY+1);
+        const ux=nX*nl,uy=nY*nl,uz=nl;
+        const ndl=Math.max(0,ux*L[0]+uy*L[1]+uz*L[2]);
+        const dfs=0.72+0.28*ndl/L[2];
+        const nh=Math.max(0,ux*Hv[0]+uy*Hv[1]+uz*Hv[2]);
+        const gl=Math.min(1,h*2.5);
+        const sp=(Math.pow(nh,90)*0.95+Math.max(0,Math.pow(nh,12)-Math.pow(Hv[2],12))*0.25)*255*gl;
+        r=r*dfs+sp;g=g*dfs+sp;b=b*dfs+sp;
+      }
+      const k=1-sh;r*=k;g*=k;b*=k;
+      px[j]=r>255?255:r;px[j+1]=g>255?255:g;px[j+2]=b>255?255:b;px[j+3]=255;
+    }}
+}
+if(typeof module!=='undefined')module.exports={makeSim,deposit,drag,step,render};
+
+(()=>{
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const el=id=>document.getElementById(id);
+// ---------- palette ----------
+const HMAX=320;
+function hsv(h,s,v){h=((h%360)+360)%360/60;const i=Math.floor(h),f=h-i,p=v*(1-s),q=v*(1-s*f),t=v*(1-s*(1-f));
+  return[[v,t,p],[q,v,p],[p,v,t],[p,q,v],[t,p,v],[v,p,q]][i%6]}
+const css=c=>'rgb('+c.map(v=>Math.round(v*255)).join(',')+')';
+const P=(h,s,v)=>({t:h/HMAX,s,v});
+const PRESETS=[
+  ['Яркая',[P(0,.88,.86),P(48,.92,.97),P(222,.9,.78),P(322,.82,.78),P(186,.9,.78)]],
+  ['Пастель',[P(350,.38,.97),P(45,.42,.98),P(205,.38,.95),P(280,.3,.92),P(150,.34,.9)]],
+  ['Земля',[P(35,.78,.8),P(14,.72,.62),P(70,.5,.52),P(24,.62,.34),P(225,.45,.38)]],
+  ['Море',[P(190,.85,.72),P(212,.88,.5),P(168,.6,.72),P(236,.7,.34),P(44,.36,.96)]],
+  ['Закат',[P(8,.9,.9),P(28,.9,.98),P(330,.7,.75),P(268,.6,.5),P(48,.6,1)]],
+];
+let slots,sel=0,flow=0.35;
+try{const d=JSON.parse(localStorage.getItem('oil-pal')||'null');if(d&&d.slots&&d.slots.length===5){slots=d.slots;flow=d.flow??flow}}catch(e){}
+if(!slots)slots=PRESETS[0][1].map(o=>({...o}));
+const save=()=>{try{localStorage.setItem('oil-pal',JSON.stringify({slots,flow}))}catch(e){}};
+const rgbOf=o=>hsv(o.t*HMAX,o.s,o.v);
+const absOf=c=>c.map(v=>-Math.log(0.05+0.9*v));
+const slotCol=k=>({A:absOf(rgbOf(slots[k])),w:0});
+const WHITE={A:[0,0,0],w:1},BLACK={A:[2.7,2.7,2.7],w:0};
+// ---------- swatches ----------
+const sws=el('sws'),dots=[];
+for(let k=0;k<7;k++){
+  if(k===5){const d=document.createElement('div');d.className='sep';sws.appendChild(d)}
+  const b=document.createElement('button');b.className='sw';
+  b.onclick=()=>{if(sel===k&&!sheetOpen())openSheet(true);else{sel=k;refresh()}};
+  sws.appendChild(b);dots.push(b)}
+const ssw=el('ssw'),sdots=[];
+for(let k=0;k<7;k++){if(k===5){const d=document.createElement('div');d.className='sep';d.style.cssText='width:1px;height:24px';ssw.appendChild(d)}
+  const b=document.createElement('button');b.className='sw';b.style.width=b.style.height='34px';b.onclick=()=>{sel=k;refresh()};ssw.appendChild(b);sdots.push(b)}
+for(const D of [dots,sdots]){D[5].style.background='#f6f6f4';D[6].style.background='#111'}
+dots[6].style.boxShadow=sdots[6].style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.18)';
+const chips=el('chips');
+PRESETS.forEach(([name,cols])=>{const c=document.createElement('button');c.className='chip';
+  c.innerHTML='<i>'+cols.map(o=>'<b style="background:'+css(rgbOf(o))+'"></b>').join('')+'</i>'+name;
+  c.onclick=()=>{slots=cols.map(o=>({...o}));if(sel>4)sel=0;refresh();save()};chips.appendChild(c)});
+function refresh(){
+  for(let k=0;k<5;k++)dots[k].style.background=sdots[k].style.background=css(rgbOf(slots[k]));
+  dots.forEach((d,k)=>d.classList.toggle('on',k===sel));sdots.forEach((d,k)=>d.classList.toggle('on',k===sel));
+  const on=sel<5;el('ed').classList.toggle('off',!on);
+  el('note').textContent=on?'Настраивается выбранный кружок. Второй палец берёт следующий цвет.':(sel===5?'Белый':'Чёрный')+' не настраивается: он кроет и осветляет'+(sel===5?'':' (затемняет)')+' то, что под ним.';
+  if(sel===6)el('note').textContent='Чёрный не настраивается: он кроет и затемняет то, что под ним.';
+  if(sel===5)el('note').textContent='Белый не настраивается: он кроет и осветляет то, что под ним.';
+  const o=slots[Math.min(sel,4)];
+  el('t').value=o.t;el('s').value=o.s;el('v').value=o.v;
+  const st=[];for(let k=0;k<=10;k++)st.push(css(hsv(k/10*HMAX,Math.max(o.s,.25),Math.max(o.v,.5))));
+  el('b0').style.background='linear-gradient(90deg,'+st.join(',')+')';
+  el('b1').style.background='linear-gradient(90deg,'+css(hsv(o.t*HMAX,0,o.v))+','+css(hsv(o.t*HMAX,1,o.v))+')';
+  el('b2').style.background='linear-gradient(90deg,#000,'+css(hsv(o.t*HMAX,o.s,1))+')';
+  el('flow').value=flow}
+['t','s','v'].forEach(k=>el(k).addEventListener('input',e=>{if(sel<5){slots[sel][k]=+e.target.value;refresh();save()}}));
+el('flow').addEventListener('input',e=>{flow=+e.target.value;if(sim)sim.flow=flow;save()});
+const sheet=el('sheet');
+const sheetOpen=()=>sheet.classList.contains('open');
+function openSheet(v){sheet.classList.toggle('open',v);el('back').classList.toggle('open',v)}
+el('back').onclick=()=>openSheet(false);
+el('gear').onclick=()=>openSheet(!sheetOpen());
+el('done').onclick=()=>openSheet(false);
+el('clr').onclick=()=>{for(const a of [sim.H,sim.R,sim.G,sim.B,sim.Wt,sim.FX,sim.FY])a.fill(0);openSheet(false)};
+refresh();
+// ---------- canvas & sim ----------
+let sim=null,off,octx,img,cellW,cellH,dpr=1;
+function setup(){
+  const w=cv.clientWidth,h=cv.clientHeight;if(w<10||h<10)return;
+  dpr=Math.min(window.devicePixelRatio||1,3);
+  cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+  const cell=Math.max(2.2,Math.sqrt(w*h/52000));
+  const nx=Math.round(w/cell),ny=Math.round(h/cell);
+  if(sim&&sim.nx===nx&&sim.ny===ny)return;
+  const ns=makeSim(nx,ny);ns.flow=flow;
+  if(sim){ // keep paint when the screen size changes
+    for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){
+      const sx=Math.min(sim.nx-1,Math.floor(x*sim.nx/nx)),sy=Math.min(sim.ny-1,Math.floor(y*sim.ny/ny)),i=sy*sim.nx+sx,j=y*nx+x;
+      ns.H[j]=sim.H[i];ns.R[j]=sim.R[i];ns.G[j]=sim.G[i];ns.B[j]=sim.B[i];ns.Wt[j]=sim.Wt[i]}}
+  else{ // a few starting drops
+    const r=Math.min(nx,ny)*0.09;
+    deposit(ns,nx*0.25,ny*0.14,r,2.4,slotCol(0));deposit(ns,nx*0.5,ny*0.18,r,2.4,slotCol(2));deposit(ns,nx*0.75,ny*0.14,r,2.4,slotCol(1))}
+  sim=ns;
+  off=document.createElement('canvas');off.width=nx;off.height=ny;octx=off.getContext('2d');img=octx.createImageData(nx,ny)}
+new ResizeObserver(setup).observe(cv);setup();
+// ---------- fingers ----------
+const act=new Map();
+const toG=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*sim.nx,(e.clientY-r.top)/r.height*sim.ny]};
+const brushR=()=>Math.max(4,Math.min(sim.nx,sim.ny)*0.045);
+function pick(k){if(sel<5)return slotCol((sel+k)%5);if(k===0)return sel===5?WHITE:BLACK;return slotCol((k-1)%5)}
+let hinted=false;
+cv.addEventListener('pointerdown',e=>{if(!sim)return;
+  cv.setPointerCapture(e.pointerId);const [x,y]=toG(e);
+  const col=pick(act.size);act.set(e.pointerId,{x,y,col,vx:0,vy:0});deposit(sim,x,y,brushR(),0.7,col);
+  if(!hinted){hinted=true;el('hint').style.opacity=0}});
+cv.addEventListener('pointermove',e=>{const a=act.get(e.pointerId);if(!a)return;
+  const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+  for(const ev of (evs.length?evs:[e])){const [x,y]=toG(ev);
+    const dx=x-a.x,dy=y-a.y,d=Math.hypot(dx,dy),n=Math.max(1,Math.ceil(d));const r=brushR();
+    for(let k=1;k<=n;k++)deposit(sim,a.x+dx*k/n,a.y+dy*k/n,r,0.09,a.col);
+    a.vx=a.vx*0.5+dx*0.5;a.vy=a.vy*0.5+dy*0.5;a.x=x;a.y=y}});
+const up=e=>act.delete(e.pointerId);
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+// ---------- loop ----------
+function frame(){
+  if(sim){
+    const r=brushR();
+    for(const a of act.values()){deposit(sim,a.x,a.y,r*0.85,0.035,a.col);
+      drag(sim,a.x,a.y,r*1.1,a.vx*0.45,a.vy*0.45);a.vx*=0.6;a.vy*=0.6}
+    step(sim);step(sim);
+    render(sim,img.data);octx.putImageData(img,0,0);
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    ctx.drawImage(off,0,0,cv.width,cv.height)}
+  requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
