@@ -7,7 +7,7 @@
 <title>Краска</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{--dock:170px;--sw:28px;--gap:7px;--joy:90px}
+html{--dock:196px;--sw:34px;--gap:9px;--joy:78px;--pad:78px}
 html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
 #cv{position:fixed;left:0;top:0;width:100%;height:calc(100% - var(--dock));display:block;touch-action:none}
 #reset{position:fixed;right:30px;top:30px;z-index:2;opacity:0;pointer-events:none;transition:opacity .2s;width:40px;height:40px}
@@ -88,6 +88,20 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .seg button{flex:1;height:44px;border-radius:12px;border:1px solid #303030;background:#242424;color:#ddd;font-size:14px;cursor:pointer}
 .seg button.on{background:#ececec;color:#141414;border-color:#ececec}
 #joyW{display:none}
+.mv.pad{gap:0}
+.pc{position:relative;width:var(--pad);height:var(--pad);border-radius:50%;background:rgba(22,22,22,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);touch-action:none}
+.pk{position:absolute;left:50%;top:50%;width:calc(var(--pad)*.3);height:calc(var(--pad)*.3);margin:calc(var(--pad)*-.15);border-radius:50%;background:#e9c58c;box-shadow:0 3px 10px rgba(0,0,0,.4);transition:transform .12s;pointer-events:none}
+#tk{background:#e8e8e8}
+.pc.drag .pk{transition:none}
+.gl{position:absolute;color:#8d877e;opacity:.55;pointer-events:none;display:grid;place-items:center}
+.gl svg{width:12px;height:12px}
+.gt{left:50%;top:6px;margin-left:-6px}.gb{left:50%;bottom:6px;margin-left:-6px}.gL{left:6px;top:50%;margin-top:-6px}.gR{right:6px;top:50%;margin-top:-6px}
+.bub{position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:rgba(233,197,140,.9);pointer-events:none}
+.lvl{position:absolute;left:50%;top:50%;width:calc(var(--pad)*.46);height:calc(var(--pad)*.46);margin:calc(var(--pad)*-.23);border-radius:50%;border:1.5px dashed rgba(255,255,255,.22);pointer-events:none}
+.grab.gi{position:absolute;top:3px;left:50%;transform:translateX(-50%);width:40px;height:16px;display:flex;justify-content:center;align-items:center;touch-action:none;cursor:grab;z-index:2}
+.grab.gi::before{content:"";width:22px;height:4px;border-radius:2px;background:#8d877e}
+.pulse{animation:pls .35s}
+@keyframes pls{0%{box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 0 0 0 rgba(233,197,140,.6)}100%{box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 0 0 14px rgba(233,197,140,0)}}
 .btns{display:flex;gap:10px;margin:14px 0 8px}
 .btns button{flex:1;height:44px;border-radius:12px;border:1px solid #303030;background:#242424;color:#e6e6e6;font-size:15px;cursor:pointer}
 .btns button.pri{background:#ececec;color:#141414;border-color:#ececec}
@@ -97,6 +111,8 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 <canvas id="cv"></canvas>
 <div id="pal"><div id="grip"></div><div id="corner"><svg viewBox="0 0 12 12" fill="none" stroke="#bbb" stroke-width="1.6" stroke-linecap="round"><path d="M11 4 4 11M11 8 8 11"/></svg></div>
   <button class="ic" id="gear" aria-label="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button></div>
+<div class="mv pad" id="padW"><div class="gi grab"></div><div class="pc" id="pad" title="Текучесть и высыхание"><span class="gl gt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 20c-1.6-2-1.6-3.6 0-5.5s1.6-3.5 0-5.5M12 20c-1.6-2-1.6-3.6 0-5.5s1.6-3.5 0-5.5M18 20c-1.6-2-1.6-3.6 0-5.5s1.6-3.5 0-5.5"/></svg></span><span class="gl gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"/></svg></span><span class="gl gL"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></span><span class="gl gR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 9c3-3 6 3 9 0s6 3 9 0M3 16c3-3 6 3 9 0s6 3 9 0"/></svg></span><i class="pk" id="pk"></i></div></div>
+<div class="mv pad" id="tiltW"><div class="gi grab"></div><div class="pc" id="tpad" title="Наклон: тап — обнулить, тяни — чувствительность"><i class="lvl"></i><i class="bub" id="bub"></i><i class="pk" id="tk"></i></div></div>
 <div class="mv" id="joyW"><div class="grab"></div><div id="joy"><div id="knob"></div></div></div>
 <div class="mv" id="dryW"><div id="pct">0%</div><div class="grab"></div><button id="dry" aria-label="Сушка"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20c-1.6-2-1.6-3.6 0-5.5s1.6-3.5 0-5.5M12 20c-1.6-2-1.6-3.6 0-5.5s1.6-3.5 0-5.5M18 20c-1.6-2-1.6-3.6 0-5.5s1.6-3.5 0-5.5"/></svg></button></div>
 <button class="ic" id="reset" aria-label="Выровнять холст"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg></button>
@@ -104,7 +120,6 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 <div id="menu">
   <button class="mi" id="m-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></svg>Сохранить PNG</button>
   <div id="sizes"></div>
-  <button class="mi" id="m-zero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5"/></svg>Обнулить наклон</button>
 </div>
 <div id="toast"><span id="toastT"></span><b id="toastB"></b></div>
 <div id="shot"><img id="shotImg" alt=""><p>Если файл не скачался — удерживай картинку и выбери «Сохранить».</p><div class="btns"><button class="pri" id="shotClose">Закрыть</button></div></div>
@@ -120,12 +135,9 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
     <div class="row"><label>Яркость</label><div class="sl"><div class="tr" id="b2"></div><input type="range" id="v" min="0.06" max="1" step="0.002"></div></div>
   </div>
   <div class="ttl">Краска</div>
-  <div class="row"><label>Текучесть<small>воск → масло</small></label><div class="sl"><div class="tr"></div><input type="range" id="flow" min="0.1" max="1" step="0.01"></div></div>
-  <div class="row"><label>Высыхание<small id="tauV"></small></label><div class="sl"><div class="tr"></div><input type="range" id="dryS" min="3" max="60" step="1"></div></div>
   <div class="row"><label>Струя<small>тонкая → толстая</small></label><div class="sl"><div class="tr"></div><input type="range" id="bsz" min="0.5" max="2" step="0.01"></div></div>
   <div class="ttl">Наклон</div>
   <div class="seg"><button id="tiltS">Датчик телефона</button><button id="tiltJ">Джойстик</button></div>
-  <div class="row"><label>Чувствительность<small>меньше → больше наклона</small></label><div class="sl"><div class="tr"></div><input type="range" id="sens" min="1" max="8" step="0.1"></div></div>
   <div class="btns"><button id="clr">Очистить</button><button class="pri" id="done">Готово</button></div>
 </div>
 <script>
@@ -453,12 +465,12 @@ void main(){
 
 (()=>{
 const cv=document.getElementById('cv');
-let TRAV=27,JOY=false;try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.cfg&&d.cfg.tilt==='joy')JOY=true}catch(e){}
-function layout(){const VH=innerHeight;let dock,sw,gap,joy=90;
-  if(JOY){dock=Math.round(Math.min(214,Math.max(170,VH*0.26)));sw=Math.round(Math.min(36,Math.max(28,(dock-96)/3)));gap=Math.round(sw*0.3);joy=Math.round(Math.min(108,Math.max(90,dock-96)))}
-  else{dock=Math.round(Math.min(186,Math.max(158,VH*0.2)));sw=Math.round(Math.min(40,Math.max(28,Math.floor((innerWidth*0.54-12)/6.2))));gap=Math.round(sw*0.3)}
-  const s=document.documentElement.style;s.setProperty('--dock',dock+'px');s.setProperty('--sw',sw+'px');s.setProperty('--gap',gap+'px');s.setProperty('--joy',joy+'px');
-  TRAV=joy*0.3;window.__lay={dock,sw,gap,joy}}
+let TRAV=27,JOY=false,NOSENS=false;try{NOSENS=localStorage.getItem('pour-nosens')==='1';const d=JSON.parse(localStorage.getItem('pour1')||'null');if((d&&d.cfg&&d.cfg.tilt==='joy')||NOSENS)JOY=true}catch(e){}
+function layout(){const VH=innerHeight,VW=innerWidth,pad=VH<700?68:78;
+  const avail=VW-134-pad,sw=Math.round(Math.min(36,Math.max(26,Math.floor((avail-12)/4.84)))),gap=Math.round(sw*0.28);
+  const dock=30+2*pad+10+(JOY?28:0);
+  const s=document.documentElement.style;s.setProperty('--dock',dock+'px');s.setProperty('--sw',sw+'px');s.setProperty('--gap',gap+'px');s.setProperty('--joy',pad+'px');s.setProperty('--pad',pad+'px');
+  TRAV=pad*0.3;window.__lay={dock,sw,gap,joy:pad,pad}}
 layout();addEventListener('resize',layout);let GL=null;try{GL=makeGL(cv)}catch(e){console.warn(e);GL=null}
 const ctx=GL?null:cv.getContext('2d');
 const el=id=>document.getElementById(id);
@@ -504,8 +516,15 @@ const PRESETS=[
   PH('Material','#f44336 #ffc107 #4caf50 #2196f3 #9c27b0'),
   PH('Кислота','#ccff00 #ff3cac #784ba0 #2b86c5 #00ffd5'),
 ];
+const NS=7;
+const wrapT=t=>((t%1.125)+1.125)%1.125;
+const grow=c=>{c=c.slice();const a=c[1],b=c[3];
+  c.push({t:wrapT(a.t+25/HMAX),s:a.s*.75,v:Math.min(1,a.v+.06)});
+  c.push({t:wrapT(b.t-25/HMAX),s:Math.min(1,b.s*.9),v:Math.max(.08,b.v*.65)});return c};
+PRESETS[0][1].push(P(130,.78,.68),P(24,.92,.96));
+for(let i=1;i<PRESETS.length;i++)PRESETS[i][1]=grow(PRESETS[i][1]);
 let slots,sel=0,cfg={flow:0.42,dry:20,bsz:1,tilt:'sensor',sens:4.5},ext=[{t:0,s:0,v:250/255},{t:0,s:0,v:.02}];  // ext = custom white, custom black
-try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.slots&&d.slots.length===5){slots=d.slots;Object.assign(cfg,d.cfg||{});delete cfg.tau;if(d.ext&&d.ext.length===2)ext=d.ext}}catch(e){}
+try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.slots&&d.slots.length===NS){slots=d.slots;Object.assign(cfg,d.cfg||{});delete cfg.tau;if(d.ext&&d.ext.length===2)ext=d.ext}}catch(e){}
 if(!slots)slots=PRESETS[0][1].map(o=>({...o}));
 const save=()=>{try{localStorage.setItem('pour1',JSON.stringify({slots,cfg,ext}))}catch(e){}};
 const rgbOf=o=>hsv(o.t*HMAX,o.s,o.v);
@@ -515,39 +534,39 @@ function whiteCol(){const c=rgbOf(ext[0]),Wc=250/255,w=Math.min(1,Math.min(...c)
   if(w>0.995)return{A:[0,0,0],w:1};
   return{A:c.map(v=>-Math.log(Math.min(1,Math.max(0.02,(v-w*Wc)/(1-w))))*(1-w)),w}}
 const blackCol=()=>({A:absOf(rgbOf(ext[1])),w:0});
-const WASH=7; // index of the wash tool
+const WASH=NS+2; // index of the wash tool
 // ---------- swatches ----------
 const DROP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"/></svg>';
 function mkSw(parent,list,onTap,before){
-  for(let k=0;k<8;k++){const b=document.createElement('button');b.className='sw';
+  for(let k=0;k<NS+3;k++){const b=document.createElement('button');b.className='sw';
     if(k===WASH){b.innerHTML=DROP;b.style.background='#26343c';b.title='Смывка'}
     b.onclick=()=>onTap(k);before?parent.insertBefore(b,before):parent.appendChild(b);list.push(b)}
-  list[6].style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.18)'}
+  list[NS+1].style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.18)'}
 const dots=[],sdots=[];
-mkSw(el('pal'),dots,k=>{if(sel===k&&k<7&&!isOpen())openSheet(true);else{sel=k;refresh()}},el('gear'));
+mkSw(el('pal'),dots,k=>{if(sel===k&&k<NS+2&&!isOpen())openSheet(true);else{sel=k;refresh()}},el('gear'));
 mkSw(el('ssw'),sdots,k=>{sel=k;refresh()});
 PRESETS.forEach(([name,cols])=>{const c=document.createElement('button');c.className='chip';
   c.innerHTML='<i>'+cols.map(o=>'<b style="background:'+css(rgbOf(o))+'"></b>').join('')+'</i>'+name;
   c.onclick=()=>{slots=cols.map(o=>({...o}));refresh();save()};el('pals').appendChild(c)});
-const SNAME=['Цвет 1','Цвет 2','Цвет 3','Цвет 4','Цвет 5','Белый','Чёрный','Смывка'];
+const SNAME=[...Array(NS)].map((_,i)=>'Цвет '+(i+1)).concat(['Белый','Чёрный','Смывка']);
 function refresh(){
-  for(let k=0;k<5;k++)dots[k].style.background=sdots[k].style.background=css(rgbOf(slots[k]));
-  for(let k=0;k<2;k++)dots[5+k].style.background=sdots[5+k].style.background=css(rgbOf(ext[k]));
+  for(let k=0;k<NS;k++)dots[k].style.background=sdots[k].style.background=css(rgbOf(slots[k]));
+  for(let k=0;k<2;k++)dots[NS+k].style.background=sdots[NS+k].style.background=css(rgbOf(ext[k]));
   for(const D of [dots,sdots])D.forEach((d,k)=>d.classList.toggle('on',k===sel));
-  const on=sel<7;el('ed').classList.toggle('off',!on);el('selN').textContent=SNAME[sel];
+  const on=sel<NS+2;el('ed').classList.toggle('off',!on);el('selN').textContent=SNAME[sel];
   el('note').textContent=on?'':'Смывка: води пальцем, и краска смывается.';
   el('note').style.display=on?'none':'block';
-  const o=sel<5?slots[sel]:sel<7?ext[sel-5]:slots[0];
-  const R=sel===5?{s:[0,.5],v:[.7,1]}:sel===6?{s:[0,.6],v:[0,.3]}:{s:[0,1],v:[.06,1]};
+  const o=sel<NS?slots[sel]:sel<NS+2?ext[sel-NS]:slots[0];
+  const R=sel===NS?{s:[0,.5],v:[.7,1]}:sel===NS+1?{s:[0,.6],v:[0,.3]}:{s:[0,1],v:[.06,1]};
   el('s').min=R.s[0];el('s').max=R.s[1];el('v').min=R.v[0];el('v').max=R.v[1];
   el('t').value=o.t;el('s').value=o.s;el('v').value=o.v;
   const st=[];for(let k=0;k<=12;k++)st.push(css(hsv(k/12*HMAX*1.125,Math.max(o.s,.25),Math.max(o.v,.5))));
   el('b0').style.background='linear-gradient(90deg,'+st.join(',')+')';
   el('b1').style.background='linear-gradient(90deg,'+css(hsv(o.t*HMAX,R.s[0],o.v))+','+css(hsv(o.t*HMAX,R.s[1],o.v))+')';
   el('b2').style.background='linear-gradient(90deg,'+css(hsv(o.t*HMAX,o.s,R.v[0]))+','+css(hsv(o.t*HMAX,o.s,R.v[1]))+')';
-  el('flow').value=cfg.flow;el('dryS').value=cfg.dry;el('sens').value=cfg.sens;el('bsz').value=cfg.bsz;el('tauV').textContent='застывает за ~'+cfg.dry+' с'}
-['t','s','v'].forEach(k=>el(k).addEventListener('input',e=>{const o=sel<5?slots[sel]:sel<7?ext[sel-5]:null;if(o){o[k]=+e.target.value;refresh();save()}}));
-[['flow','flow'],['dryS','dry'],['bsz','bsz'],['sens','sens']].forEach(([id,k])=>el(id).addEventListener('input',e=>{cfg[k]=+e.target.value;applyCfg();save();el('tauV').textContent='застывает за ~'+cfg.dry+' с'}));
+  el('bsz').value=cfg.bsz}
+['t','s','v'].forEach(k=>el(k).addEventListener('input',e=>{const o=sel<NS?slots[sel]:sel<NS+2?ext[sel-NS]:null;if(o){o[k]=+e.target.value;refresh();save()}}));
+[['bsz','bsz']].forEach(([id,k])=>el(id).addEventListener('input',e=>{cfg[k]=+e.target.value;applyCfg();save()}));
 function applyCfg(){if(sim){sim.flow=cfg.flow;sim.tau=cfg.dry/3}}  // paint sets after ~3 time constants
 const sheet=el('sheet'),isOpen=()=>sheet.classList.contains('open');
 function openSheet(v){if(v)menu.classList.remove('open');sheet.classList.toggle('open',v);el('back').classList.toggle('open',v)}
@@ -556,15 +575,15 @@ el('clr').onclick=()=>{for(const a of [sim.H,sim.R,sim.G,sim.B,sim.Wt,sim.D,sim.
 // ---------- movable palette ----------
 const pal=el('pal');
 let PS={cols:null,x:null,y:null};
-try{const d=JSON.parse(localStorage.getItem('pour-pal7')||'null');if(d)PS=d}catch(e){}
-const savePS=()=>{try{localStorage.setItem('pour-pal7',JSON.stringify(PS))}catch(e){}};
-const ITEMS=9;
+try{const d=JSON.parse(localStorage.getItem('pour-pal8')||'null');if(d)PS=d}catch(e){}
+const savePS=()=>{try{localStorage.setItem('pour-pal8',JSON.stringify(PS))}catch(e){}};
+const ITEMS=NS+4;
 const LAY={get sw(){return window.__lay.sw},get gap(){return window.__lay.gap}};
 function placePal(snap){
-  if(PS.cols==null)PS.cols=JOY?3:5;
+  if(PS.cols==null)PS.cols=4;
   pal.style.gridTemplateColumns='repeat('+PS.cols+','+LAY.sw+'px)';
   const w=pal.offsetWidth,h=pal.offsetHeight,VW=innerWidth,VH=innerHeight,m=30;
-  if(PS.x===null){PS.x=JOY?(VW-w)/2:Math.max(m,(VW-w)/2-20);PS.y=VH-h-30}
+  if(PS.x===null){PS.x=m;PS.y=VH-h-30}
   let x=Math.min(Math.max(m,PS.x),VW-w-m),y=Math.min(Math.max(m,PS.y),VH-h-m);
   if(snap){const S=56;if(x<S)x=m;if(VW-w-x<S)x=VW-w-m;if(y<S)y=m;if(VH-h-y<S)y=VH-h-m}
   PS.x=x;PS.y=y;pal.style.left=x+'px';pal.style.top=y+'px'}
@@ -598,8 +617,11 @@ function movable(box,key,def){
       box.classList.remove('drag');place(true);try{localStorage.setItem(key,JSON.stringify(P))}catch(e){}};
     g.addEventListener('pointermove',mv);g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up)});
   addEventListener('resize',()=>place(true));requestAnimationFrame(()=>place(true))}
-movable(el('joyW'),'pour-joy5',(w,h,VW,VH)=>({x:30,y:VH-h-30}));
-movable(el('dryW'),'pour-dry5',(w,h,VW,VH)=>({x:VW-w-30,y:VH-h-30-46}));
+const palW=()=>LAY.sw*4+LAY.gap*3+12,padX=()=>30+palW()+10;
+movable(el('padW'),'pour-pad1',(w,h,VW,VH)=>{const p=window.__lay.pad;return{x:padX(),y:VH-30-2*p-6-(JOY?28:0)}});
+movable(el('tiltW'),'pour-tilt1',(w,h,VW,VH)=>({x:padX(),y:VH-30-window.__lay.pad}));
+movable(el('joyW'),'pour-joy6',(w,h,VW,VH)=>({x:padX(),y:VH-30-window.__lay.pad-28}));
+movable(el('dryW'),'pour-dry6',(w,h,VW,VH)=>({x:VW-w-30,y:VH-h-30-46}));
 // ---------- dryer: hold to dry, faster and faster ----------
 let drying=false,dryT=0,wet0=0,pctTO=0;const dryB=el('dry'),pctE=el('pct');
 const wetMass=()=>{let m=0;const D=sim.D;for(let i=0;i<D.length;i++)m+=D[i];return m};  // remaining wetness
@@ -616,24 +638,39 @@ dragOn(joy,(dx,dy,st,ev)=>{const r=joy.getBoundingClientRect();setTilt((ev.clien
   e=>{joy.classList.add('drag');const now=performance.now();if(now-lastTap<300){setTilt(0,0);lastTap=0;return}lastTap=now;
     const r=joy.getBoundingClientRect();setTilt((e.clientX-r.left-r.width/2)/TRAV,(e.clientY-r.top-r.height/2)/TRAV)});
 // ---------- tilt: phone sensor (default) or on-screen joystick ----------
-let sx=0,sy=0,tsx=0,tsy=0,nx0=0,ny0=0,hasN=false,sensorSeen=false,sensorDead=false,askedPerm=false;
+let sx=0,sy=0,tsx=0,tsy=0,nx0=0,ny0=0,hasN=false,sensorSeen=false,askedPerm=false;
+const resetKeys=()=>{try{['pour-pal8','pour-pad1','pour-tilt1','pour-joy6','pour-dry6'].forEach(k=>localStorage.removeItem(k))}catch(e){}};
 function onMotion(e){const g=e.accelerationIncludingGravity;if(!g||g.x==null||g.y==null)return;
-  if(!sensorSeen){sensorSeen=true;if(sensorDead){sensorDead=false;applyMode(true)}}
+  if(!sensorSeen){sensorSeen=true;if(NOSENS&&cfg.tilt!=='joy'){try{localStorage.removeItem('pour-nosens')}catch(e){}resetKeys();location.reload();return}}
   const fx=-g.x/9.81,fy=g.y/9.81,q=(((screen.orientation&&screen.orientation.angle)||window.orientation||0)%360+360)%360;
   let x=fx,y=fy;if(q===90){x=fy;y=-fx}else if(q===180){x=-fx;y=-fy}else if(q===270){x=-fy;y=fx}
   const l=Math.hypot(x,y);if(l>1){x/=l;y/=l}sx=x;sy=y;if(!hasN){nx0=x;ny0=y;hasN=true}}
 addEventListener('devicemotion',onMotion);
 function askSensor(){if(askedPerm)return;askedPerm=true;try{if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission==='function')DeviceMotionEvent.requestPermission().catch(()=>{})}catch(e){}}
 function refreshSeg(){el('tiltS').classList.toggle('on',cfg.tilt!=='joy');el('tiltJ').classList.toggle('on',cfg.tilt==='joy')}
-function applyMode(reset){
-  JOY=cfg.tilt==='joy'||sensorDead;el('joyW').style.display=JOY?'block':'none';layout();setTilt(0,0);
-  if(reset){PS.cols=null;PS.x=null;PS.y=null;try{localStorage.removeItem('pour-pal7')}catch(e){}}
-  placePal(false);refreshSeg();requestAnimationFrame(()=>dispatchEvent(new Event('resize')))}
-el('m-zero').onclick=()=>{nx0=sx;ny0=sy;closeMenu();toast('Эта поза теперь — ровно')};
-el('tiltS').onclick=()=>{cfg.tilt='sensor';sensorDead=!sensorSeen&&sensorDead;save();askSensor();applyMode(true);if(!sensorSeen)setTimeout(()=>{if(!sensorSeen&&cfg.tilt==='sensor'){sensorDead=true;applyMode(true)}},2500)};
-el('tiltJ').onclick=()=>{cfg.tilt='joy';save();applyMode(true)};
-setTimeout(()=>{if(!sensorSeen&&cfg.tilt!=='joy'){sensorDead=true;applyMode(true)}},2500);
-applyMode(false);
+function applyMode(){el('joyW').style.display=JOY?'block':'none';el('tiltW').style.display=JOY?'none':'flex';layout();setTilt(0,0);refreshSeg()}
+const switchMode=m=>{cfg.tilt=m;save();try{localStorage.removeItem('pour-nosens')}catch(e){}resetKeys();location.reload()};
+el('tiltS').onclick=()=>{if(cfg.tilt!=='joy'&&!NOSENS)return;switchMode('sensor')};
+el('tiltJ').onclick=()=>{if(cfg.tilt==='joy')return;switchMode('joy')};
+setTimeout(()=>{if(!sensorSeen&&cfg.tilt!=='joy'&&!NOSENS){try{localStorage.setItem('pour-nosens','1')}catch(e){}resetKeys();location.reload()}},2500);
+applyMode();
+// ---------- pads: paint (flow x dry time) and tilt (tap = level, drag = sensitivity) ----------
+const clampN=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
+function padDrag(pad,onMove,onTap){
+  pad.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();pad.setPointerCapture(e.pointerId);pad.classList.add('drag');
+    const r=pad.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,R=r.width/2-r.width*.15-4,sx0=e.clientX,sy0=e.clientY;let moved=false;
+    const mv=ev=>{if(Math.hypot(ev.clientX-sx0,ev.clientY-sy0)>8)moved=true;if(moved||!onTap)onMove((ev.clientX-cx)/R,(ev.clientY-cy)/R)};
+    const up=()=>{pad.removeEventListener('pointermove',mv);pad.removeEventListener('pointerup',up);pad.removeEventListener('pointercancel',up);pad.classList.remove('drag');if(!moved&&onTap)onTap()};
+    pad.addEventListener('pointermove',mv);pad.addEventListener('pointerup',up);pad.addEventListener('pointercancel',up);if(!onTap)mv(e)})}
+const padR=()=>window.__lay.pad/2-window.__lay.pad*.15-4;
+function placePaintKnob(){const R=padR(),x=clampN((cfg.flow-0.1)/0.9*2-1,-1,1),y=clampN(2*Math.log(cfg.dry/3)/Math.log(20)-1,-1,1);
+  el('pk').style.transform='translate('+(x*R)+'px,'+(y*R)+'px)'}
+padDrag(el('pad'),(nx,ny)=>{const l=Math.hypot(nx,ny);if(l>1){nx/=l;ny/=l}
+  cfg.flow=Math.round((0.1+0.9*(nx+1)/2)*100)/100;cfg.dry=Math.round(3*Math.pow(20,(ny+1)/2)*10)/10;applyCfg();placePaintKnob();save()});
+function placeTiltKnob(){const R=padR(),y=clampN(1-2*Math.log(cfg.sens)/Math.log(8),-1,1);el('tk').style.transform='translate(0px,'+(y*R)+'px)'}
+padDrag(el('tpad'),(nx,ny)=>{const y=clampN(ny,-1,1);cfg.sens=Math.round(Math.pow(8,(1-y)/2)*100)/100;placeTiltKnob();save()},
+  ()=>{nx0=sx;ny0=sy;const p=el('tpad');p.classList.remove('pulse');void p.offsetWidth;p.classList.add('pulse')});
+placePaintKnob();placeTiltKnob();addEventListener('resize',()=>{placePaintKnob();placeTiltKnob()});
 // ---------- canvas sizes ----------
 const SIZES=[
   {id:'1:1',n:'1:1',w:1080,h:1080},{id:'4:5',n:'4:5',w:1080,h:1350},{id:'3:4',n:'3:4',w:1080,h:1440},
@@ -717,7 +754,7 @@ function pickSize(s){
 let hinted=false;
 const ptr=new Map(),act=new Map();let pair=null;
 const brushR=()=>Math.max(2.2,Math.min(sim.nx,sim.ny)*0.018*cfg.bsz);   // starting drop: thin
-function pick(n){if(sel<5)return(sel+n)%5;if(n===0)return sel;return(n-1)%5}
+function pick(n){if(sel<NS)return(sel+n)%NS;if(n===0)return sel;return(n-1)%NS}
 const scr=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
 function toBoard(sx,sy){const c=Math.cos(view.a),s=Math.sin(view.a),dx=sx-(cv.clientWidth/2+view.ox),dy=sy-(cv.clientHeight/2+view.oy);
   return[(dx*c+dy*s)/view.z+BW/2,(-dx*s+dy*c)/view.z+BH/2]}
@@ -747,7 +784,7 @@ const up=e=>{const p=ptr.get(e.pointerId);if(!p)return;
   ptr.delete(e.pointerId);act.delete(e.pointerId)};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 el('reset').onclick=()=>{view.a=0;view.z=1;view.ox=0;view.oy=0;el('reset').classList.remove('show')};
-const colOf=k=>k===5?whiteCol():k===6?blackCol():slotCol(k);
+const colOf=k=>k===NS?whiteCol():k===NS+1?blackCol():slotCol(k);
 function pourFrame(a,dt){
   const [x,y]=toGrid(a.p.sx,a.p.sy),r0=brushR();
   const dx=x-a.px,dy=y-a.py,d=Math.hypot(dx,dy),n=Math.max(1,Math.ceil(d/0.7));
@@ -769,6 +806,7 @@ function frame(now){
       nx0+=(sx-nx0)*Math.min(1,dt/14);ny0+=(sy-ny0)*Math.min(1,dt/14);       // the pose you hold the phone in slowly becomes "level"
       let x=(sx-nx0)*cfg.sens,y=(sy-ny0)*cfg.sens;const l=Math.hypot(x,y);if(l>1){x/=l;y/=l}
       tsx+=(dz(x)-tsx)*k;tsy+=(dz(y)-tsy)*k;tilt=[tsx,tsy]}
+    if(!JOY){const R=padR()*.7;el('bub').style.transform='translate('+(tsx*R)+'px,'+(tsy*R)+'px)'}
     {const c=Math.cos(view.a),s=Math.sin(view.a);sim.tx=tilt[0]*c+tilt[1]*s;sim.ty=-tilt[0]*s+tilt[1]*c}  // tilt is fixed to the screen
     if(drying){dryT+=dt;const g=Math.min(1,Math.pow(dryT/1.8,2)),rate=0.4+7*g;   // accelerating dryer
       const k=Math.exp(-rate*dt),D=sim.D;for(let i=0;i<D.length;i++)D[i]*=k;settle(sim);
