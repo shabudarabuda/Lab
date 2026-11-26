@@ -50,7 +50,7 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .ic svg{width:16px;height:16px}
 #grip{position:absolute;left:0;right:0;top:0;height:20px;display:flex;justify-content:center;align-items:center;cursor:grab;touch-action:none}
 #grip::before{content:"";width:30px;height:12px;background:radial-gradient(circle,rgba(255,255,255,.28) 1.1px,transparent 1.6px) 0 0/6px 6px}
-#corner{position:absolute;right:-9px;bottom:-9px;width:26px;height:26px;border-radius:50%;background:#2a2a2a;border:1px solid #3a3a3a;display:grid;place-items:center;touch-action:none;cursor:nwse-resize}
+#corner{position:absolute;right:-13px;bottom:-13px;width:26px;height:26px;border-radius:50%;background:#2a2a2a;border:1px solid #3a3a3a;display:grid;place-items:center;touch-action:none;cursor:nwse-resize}
 #corner svg{width:12px;height:12px}
 
 .mv{position:fixed;left:0;top:0;z-index:2;display:flex;flex-direction:column;align-items:center;gap:2px;transition:left .18s,top .18s}
@@ -116,6 +116,8 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .btns{display:flex;gap:10px;margin:14px 0 8px}
 .btns button{flex:1;height:44px;border-radius:10px;border:1px solid #303030;background:#242424;color:#e6e6e6;font-size:15px;cursor:pointer}
 .btns button.pri{background:#ececec;color:#141414;border-color:#ececec}
+#gear{width:var(--sw);height:var(--sw);border-radius:50%;place-self:center;margin:0}
+#gear svg{width:46%;height:46%}
 </style>
 </head>
 <body>
@@ -474,7 +476,7 @@ void main(){
     gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,tex1);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,nx,ny,gl.RGBA,gl.FLOAT,A1);
     gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);
     gl.uniform2f(U('uGrid'),nx,ny);gl.uniform2f(U('uBoard'),BW,BH);gl.uniform2f(U('uScreen'),SW,SH);
-    gl.uniform4f(U('uView'),Math.cos(view.a),Math.sin(view.a),view.z,view.ox);gl.uniform1f(U('uOY'),view.oy);gl.uniform1f(U('uDpr'),dpr);gl.uniform1f(U('uRad'),opt&&opt.rad!=null?opt.rad:6);
+    gl.uniform4f(U('uView'),Math.cos(view.a),Math.sin(view.a),view.z,view.ox);gl.uniform1f(U('uOY'),view.oy);gl.uniform1f(U('uDpr'),dpr);gl.uniform1f(U('uRad'),opt&&opt.rad!=null?opt.rad:2);
     gl.drawArrays(gl.TRIANGLE_STRIP,0,4)}};
 }
 
@@ -545,15 +547,17 @@ const PRESETS=[
   PH('Material','#f44336 #ffc107 #4caf50 #2196f3 #9c27b0'),
   PH('Кислота','#ccff00 #ff3cac #784ba0 #2b86c5 #00ffd5'),
 ];
-const NS=7;
+const NS=8;
 const wrapT=t=>((t%1.125)+1.125)%1.125;
 const grow=c=>{c=c.slice();const a=c[1],b=c[3];
   c.push({t:wrapT(a.t+25/HMAX),s:a.s*.75,v:Math.min(1,a.v+.06)});
-  c.push({t:wrapT(b.t-25/HMAX),s:Math.min(1,b.s*.9),v:Math.max(.08,b.v*.65)});return c};
-PRESETS[0][1].push(P(130,.78,.68),P(24,.92,.96));
+  c.push({t:wrapT(b.t-25/HMAX),s:Math.min(1,b.s*.9),v:Math.max(.08,b.v*.65)});
+  const m=c[2];c.push({t:wrapT(m.t+30/HMAX),s:m.s*.8,v:Math.min(1,m.v+.05)});return c};
+PRESETS[0][1].push(P(130,.78,.68),P(24,.92,.96),P(272,.72,.6));
 for(let i=1;i<PRESETS.length;i++)PRESETS[i][1]=grow(PRESETS[i][1]);
 let slots,sel=0,cfg={flow:0.42,dry:20,bsz:1.8,bv:2,tilt:'sensor',sens:4.5},ext=[{t:0,s:0,v:250/255},{t:0,s:0,v:.02}];  // ext = custom white, custom black
-try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.slots&&d.slots.length===NS){slots=d.slots;if(d.cfg&&d.cfg.bv!==2)delete d.cfg.bsz;Object.assign(cfg,d.cfg||{});cfg.bv=2;delete cfg.tau;if(d.ext&&d.ext.length===2)ext=d.ext}}catch(e){}
+try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.slots&&d.slots.length===NS-1)d.slots.push({...PRESETS[0][1][NS-1]});
+if(d&&d.slots&&d.slots.length===NS){slots=d.slots;if(d.cfg&&d.cfg.bv!==2)delete d.cfg.bsz;Object.assign(cfg,d.cfg||{});cfg.bv=2;delete cfg.tau;if(d.ext&&d.ext.length===2)ext=d.ext}}catch(e){}
 if(!slots)slots=PRESETS[0][1].map(o=>({...o}));
 const save=()=>{try{localStorage.setItem('pour1',JSON.stringify({slots,cfg,ext}))}catch(e){}};
 const rgbOf=o=>hsv(o.t*HMAX,o.s,o.v);
@@ -568,7 +572,7 @@ const WASH=NS+2; // index of the wash tool
 const DROP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 20h-10.5l-4.2-4.3a1 1 0 0 1 0-1.4l10-10a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4L11 20"/><path d="M18 13.3 11.7 7"/></svg>';
 function mkSw(parent,list,onTap,before){
   for(let k=0;k<NS+3;k++){const b=document.createElement('button');b.className='sw';
-    if(k===WASH){b.innerHTML=DROP;b.style.background='#26343c';b.title=t('wash')}
+    if(k===WASH){b.innerHTML=DROP;b.style.background='#202020';b.style.color='#858585';b.title=t('wash')}
     b.onclick=()=>onTap(k);before?parent.insertBefore(b,before):parent.appendChild(b);list.push(b)}
   list[NS+1].style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.18)'}
 const dots=[],sdots=[];
