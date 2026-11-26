@@ -17,7 +17,7 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 #menu.open{opacity:1;pointer-events:auto;transform:none}
 .mi{display:flex;align-items:center;gap:12px;width:100%;height:46px;padding:0 12px;border:none;border-radius:11px;background:transparent;color:#ececec;font-size:15px;text-align:left;cursor:pointer}
 .mi:active{background:#2a2a2a}
-.mi svg{width:20px;height:20px;flex:none;color:#bdbdbd}
+.mi svg{width:20px;height:20px;flex:none;color:#8a8a8a}
 .mi small{margin-left:auto;color:#777;font-size:12px}
 #sizes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px 6px 4px}
 .sz{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;height:58px;border:1px solid #2e2e2e;border-radius:11px;background:#212121;color:#d0d0d0;font-size:13px;cursor:pointer;padding:0}
@@ -33,8 +33,11 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 #shot img{max-width:100%;max-height:68%;border-radius:8px;-webkit-user-select:auto;user-select:auto;-webkit-touch-callout:default}
 #shot p{margin:0;color:#9a9a9a;font-size:13px;text-align:center}
 #shot .btns{width:100%;max-width:360px}
-#pals{display:grid!important;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:calc((100% - 16px)/3);gap:8px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;padding-bottom:6px;touch-action:pan-x;scrollbar-width:none}
+#pals{display:grid!important;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:calc((100% - 24px)/3.3);gap:8px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;padding-bottom:6px;touch-action:pan-x;scrollbar-width:none}
 #pals::-webkit-scrollbar{display:none}
+#pdots{display:flex;justify-content:center;gap:5px;margin:0 0 6px;height:5px}
+#pdots i{width:4px;height:4px;border-radius:50%;background:#555;transition:background .15s}
+#pdots i.on{background:#bbb}
 #pals .chip{scroll-snap-align:start;flex-direction:column;align-items:flex-start;gap:6px;border-radius:12px;padding:8px 10px;min-width:0}
 #pals .chip span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px}
 #hint{position:fixed;left:20px;right:80px;top:28%;text-align:center;color:rgba(40,36,30,.5);font-size:14px;pointer-events:none;transition:opacity .6s}
@@ -43,7 +46,7 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .sw{width:var(--sw);height:var(--sw);border-radius:50%;border:none;padding:0;position:relative;flex:none;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);display:grid;place-items:center;color:#cfe6f2}
 .sw.on::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #ececec}
 .sw svg{width:14px;height:14px}
-.ic{width:28px;height:28px;border-radius:10px;background:#202020;border:1px solid #2e2e2e;color:#ddd;display:grid;place-items:center;cursor:pointer;padding:0}
+.ic{width:28px;height:28px;border-radius:10px;background:#202020;border:1px solid #2e2e2e;color:#858585;display:grid;place-items:center;cursor:pointer;padding:0}
 .ic svg{width:16px;height:16px}
 #grip{position:absolute;left:0;right:0;top:0;height:20px;display:flex;justify-content:center;align-items:center;cursor:grab;touch-action:none}
 #grip::before{content:"";width:30px;height:12px;background:radial-gradient(circle,rgba(255,255,255,.28) 1.1px,transparent 1.6px) 0 0/6px 6px}
@@ -99,8 +102,8 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 #ft::before{content:"";position:absolute;top:50%;left:0;right:0;height:4px;margin-top:-2px;border-radius:2px;background:#555}
 #fthumb{position:absolute;top:50%;width:44px;height:44px;margin-top:-22px;pointer-events:none}
 #fthumb svg{width:44px;height:44px;overflow:visible;display:block}
-#fshape{fill:var(--pc,#d9d9d9);stroke:var(--pc,#d9d9d9);stroke-width:2.2;stroke-linejoin:round;paint-order:stroke}
-#fthumb svg{filter:drop-shadow(0 0 .6px rgba(255,255,255,.55))}
+#fshape{fill:#cfcfcf;stroke:#cfcfcf;stroke-width:2.2;stroke-linejoin:round;paint-order:stroke}
+
 #langs{display:flex;justify-content:space-between;gap:2px;margin:8px 6px 0}
 #langs .lg{background:none;border:none;color:#757575;font:500 11.5px/1 system-ui,sans-serif;letter-spacing:.05em;padding:7px 8px;border-radius:8px;cursor:pointer}
 #langs .lg.on{color:#f0f0f0;background:#2a2a2a}
@@ -144,6 +147,7 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
   <div id="ssw"></div>
   <div id="note"></div>
   <div class="chips" id="pals" style="margin:8px 0 6px"></div>
+  <div id="pdots"></div>
   <div id="ed">
     <div class="row"><label data-i="temp"></label><div class="sl"><div class="tr" id="b0"></div><input type="range" id="t" min="0" max="1.125" step="0.002"></div></div>
     <div class="row"><label data-i="sat"></label><div class="sl"><div class="tr" id="b1"></div><input type="range" id="s" min="0" max="1" step="0.002"></div></div>
@@ -573,6 +577,10 @@ mkSw(el('ssw'),sdots,k=>{sel=k;refresh()});
 PRESETS.forEach(([name,cols])=>{const c=document.createElement('button');c.className='chip';
   c.innerHTML='<i>'+cols.map(o=>'<b style="background:'+css(rgbOf(o))+'"></b>').join('')+'</i><span data-pn="'+name+'">'+name+'</span>';
   c.onclick=()=>{slots=cols.map(o=>({...o}));refresh();save()};el('pals').appendChild(c)});
+{const pl=el('pals'),pd=el('pdots');let np=0;
+  const build=()=>{const n=Math.max(1,Math.ceil(pl.scrollWidth/pl.clientWidth));if(!pl.clientWidth||n===np)return;np=n;pd.innerHTML='';for(let k=0;k<n;k++)pd.appendChild(document.createElement('i'));mark()};
+  const mark=()=>{const mx=pl.scrollWidth-pl.clientWidth,k=mx>0?Math.round(pl.scrollLeft/mx*(np-1)):0;[...pd.children].forEach((d,i)=>d.classList.toggle('on',i===k))};
+  pl.addEventListener('scroll',mark,{passive:true});window.__pdots=()=>{build();mark()}}
 const SNAME=i=>i<NS?t('color')+' '+(i+1):[t('white'),t('black'),t('wash')][i-NS];
 function refresh(){
   {const po=sel<NS?slots[sel]:sel<NS+2?ext[sel-NS]:null;document.documentElement.style.setProperty('--pc',po?css(rgbOf(po)):'#8aa4b0')}
@@ -608,7 +616,7 @@ function applyLang(){
 el('zero').onclick=()=>{nx0=sx;ny0=sy;tsx=0;tsy=0;toast(t('zeroed'))};
 function applyCfg(){if(sim){const u=Math.min(1,Math.max(0,(cfg.flow-0.1)/(FMAX-0.1)));sim.flow=cfg.flow;sim.tau=(cfg.dry/3)*(0.04+0.96*Math.pow(u/0.4,1.5))}}  // paint sets after ~3 time constants
 const sheet=el('sheet'),isOpen=()=>sheet.classList.contains('open');
-function openSheet(v){if(v)menu.classList.remove('open');sheet.classList.toggle('open',v);el('back').classList.toggle('open',v)}
+function openSheet(v){if(v)requestAnimationFrame(()=>window.__pdots&&window.__pdots());if(v)menu.classList.remove('open');sheet.classList.toggle('open',v);el('back').classList.toggle('open',v)}
 el('gear').onclick=()=>openSheet(!isOpen());el('done').onclick=()=>openSheet(false);el('back').onclick=()=>{menu.classList.remove('open');openSheet(false)};
 el('clr').onclick=()=>{for(const a of [sim.H,sim.R,sim.G,sim.B,sim.Wt,sim.D,sim.HD,sim.RD,sim.GD,sim.BD,sim.WD,sim.FX,sim.FY])a.fill(0);openSheet(false);closeMenu()};
 // ---------- movable palette ----------
@@ -665,7 +673,8 @@ movable(el('joyW'),'pour-joy9',(w,h,VW,VH)=>({x:VW-30-w-4,y:VH-30-window.__lay.p
   th.style.left=((1-uOf())*W)+'px';
   const D=[22,5, 26,12,34,20,34,28, 34,34.6,28.6,40,22,40, 15.4,40,10,34.6,10,28, 10,20,18,12,22,5],
         S=[22,8, 26.3,12.3,30.7,17.7,35,22, 30.7,26.3,26.3,31.7,22,36, 17.7,31.7,13.3,26.3,9,22, 13.3,17.7,17.7,12.3,22,8];
-  const P=D.map((v,i)=>(v+(S[i]-v)*g).toFixed(1));
+  const Dn=D.map((v,i)=>i%2?22+(v-22.5)*.78:22+(v-22)*.78);
+  const P=Dn.map((v,i)=>(v+(S[i]-v)*g).toFixed(1));
   el('fshape').setAttribute('d','M'+P[0]+' '+P[1]+' C'+P.slice(2,8).join(' ')+' C'+P.slice(8,14).join(' ')+' C'+P.slice(14,20).join(' ')+' C'+P.slice(20,26).join(' ')+'Z')};
  const setU=x=>{const r=ft.getBoundingClientRect(),W=r.width-44;let u=1-(x-r.left-22)/W;u=Math.min(1,Math.max(0,u));cfg.flow=0.1+(FMAX-0.1)*u;applyCfg();window.__flowUI();save()};
  fv.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();fv.setPointerCapture(e.pointerId);setU(e.clientX);
