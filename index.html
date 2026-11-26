@@ -91,17 +91,19 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .seg button{flex:1;height:44px;border-radius:12px;border:1px solid #303030;background:#242424;color:#ddd;font-size:14px;cursor:pointer}
 .seg button.on{background:#ececec;color:#141414;border-color:#ececec}
 #joyW{display:none}
-#flowW{flex-direction:row;align-items:center;gap:0;width:var(--flw);height:46px}
-#flowW .grab.gv{width:24px;height:100%;flex:none}
+#flowW{flex-direction:row;align-items:center;gap:0;width:var(--flw);height:46px;background:rgba(32,32,32,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:12px}
+#flowW .grab.gv{width:22px;height:100%;flex:none}
 #flowW .grab.gv::before{width:12px;height:30px}
 #fv{flex:1;min-width:0;height:100%;display:flex;align-items:center;padding:0 6px 0 2px;touch-action:none}
 #ft{position:relative;flex:1;min-width:0;height:100%;touch-action:none}
 #ft::before{content:"";position:absolute;top:50%;left:0;right:0;height:4px;margin-top:-2px;border-radius:2px;background:#555}
 #fthumb{position:absolute;top:50%;width:44px;height:44px;margin-top:-22px;pointer-events:none}
 #fthumb svg{width:44px;height:44px;overflow:visible;display:block}
-#fshape{fill:var(--pc,#d9d9d9);stroke:rgba(255,255,255,.35);stroke-width:.8}
-#langs{display:flex;gap:5px;margin:10px 6px 0}
-#langs .sz{flex:1;height:32px!important}
+#fshape{fill:var(--pc,#d9d9d9);stroke:var(--pc,#d9d9d9);stroke-width:2.2;stroke-linejoin:round;paint-order:stroke}
+#fthumb svg{filter:drop-shadow(0 0 .6px rgba(255,255,255,.55))}
+#langs{display:flex;justify-content:space-between;gap:2px;margin:8px 6px 0}
+#langs .lg{background:none;border:none;color:#757575;font:500 11.5px/1 system-ui,sans-serif;letter-spacing:.05em;padding:7px 8px;border-radius:8px;cursor:pointer}
+#langs .lg.on{color:#f0f0f0;background:#2a2a2a}
 #menu .ttl{margin:12px 6px 4px}
 #menu .row{margin:0 6px}#menu .row label{width:96px;font-size:13px}
 #menu .seg{margin:4px 6px}#menu .seg button{height:38px;font-size:13px}
@@ -117,7 +119,7 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 <canvas id="cv"></canvas>
 <div id="pal"><div id="grip"></div><div id="corner"><svg viewBox="0 0 12 12" fill="none" stroke="#bbb" stroke-width="1.6" stroke-linecap="round"><path d="M11 4 4 11M11 8 8 11"/></svg></div>
   <button class="ic" id="gear" data-ia="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button></div>
-<div class="mv" id="flowW"><div class="grab gv"></div><div id="fv" data-ia="flow" aria-label="Flow"><div id="ft"><div id="fthumb"><svg viewBox="0 0 44 44"><path id="fshape" d=""/><ellipse id="fhi" fill="#fff" opacity=".3"/></svg></div></div></div></div>
+<div class="mv" id="flowW"><div class="grab gv"></div><div id="fv" data-ia="flow" aria-label="Flow"><div id="ft"><div id="fthumb"><svg viewBox="0 0 44 44"><path id="fshape" d=""/></svg></div></div></div></div>
 <div class="mv" id="joyW"><div class="grab"></div><div id="joy"><div id="knob"></div></div></div>
 <button class="ic" id="reset" data-ia="reset" aria-label="Reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg></button>
 <button class="ic" id="burger" data-ia="menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button>
@@ -559,7 +561,7 @@ function whiteCol(){const c=rgbOf(ext[0]),Wc=250/255,w=Math.min(1,Math.min(...c)
 const blackCol=()=>({A:absOf(rgbOf(ext[1])),w:0});
 const WASH=NS+2; // index of the wash tool
 // ---------- swatches ----------
-const DROP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"/></svg>';
+const DROP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 20h-10.5l-4.2-4.3a1 1 0 0 1 0-1.4l10-10a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4L11 20"/><path d="M18 13.3 11.7 7"/></svg>';
 function mkSw(parent,list,onTap,before){
   for(let k=0;k<NS+3;k++){const b=document.createElement('button');b.className='sw';
     if(k===WASH){b.innerHTML=DROP;b.style.background='#26343c';b.title=t('wash')}
@@ -600,8 +602,8 @@ function applyLang(){
   document.querySelectorAll('[data-pn]').forEach(n=>{n.textContent=L==='ru'?n.dataset.pn:(PNEN[n.dataset.pn]||n.dataset.pn)});
   const w=document.querySelector('.sw[title]');if(w)w.title=t('wash');
   refresh();syncCfg();
-  document.querySelectorAll('#langs .sz').forEach(b=>b.classList.toggle('on',b.dataset.l===L))}
-{const box=el('langs');for(const l of LANGS){const b=document.createElement('button');b.className='sz';b.dataset.l=l;b.textContent=l.toUpperCase();
+  document.querySelectorAll('#langs .lg').forEach(b=>b.classList.toggle('on',b.dataset.l===L))}
+{const box=el('langs');for(const l of LANGS){const b=document.createElement('button');b.className='lg';b.dataset.l=l;b.textContent=l.toUpperCase();
   b.onclick=()=>{L=l;try{localStorage.setItem('pour-lang',l)}catch(e){}applyLang();if(menu.classList.contains('open'))buildSizes()};box.appendChild(b)}}
 el('zero').onclick=()=>{nx0=sx;ny0=sy;tsx=0;tsy=0;toast(t('zeroed'))};
 function applyCfg(){if(sim){const u=Math.min(1,Math.max(0,(cfg.flow-0.1)/(FMAX-0.1)));sim.flow=cfg.flow;sim.tau=(cfg.dry/3)*(0.04+0.96*Math.pow(u/0.4,1.5))}}  // paint sets after ~3 time constants
@@ -659,10 +661,12 @@ movable(el('joyW'),'pour-joy9',(w,h,VW,VH)=>({x:VW-30-w-4,y:VH-30-window.__lay.p
 // ---------- one vertical slider: up = runny and slow to dry, down = thick and sets fast ----------
 {const ft=el('ft'),th=el('fthumb'),fv=el('fv');
  const uOf=()=>Math.min(1,Math.max(0,(cfg.flow-0.1)/(FMAX-0.1)));
- window.__flowUI=()=>{const W=ft.clientWidth-44,g=1-uOf(),w=20-8*g,h=7+23*g,bot=22+h/2,k=bot-h*1.333;   // runny = flat puddle, thick = tall dollop
+ window.__flowUI=()=>{const W=ft.clientWidth-44,g=1-uOf();   // runny = drop, solid = diamond
   th.style.left=((1-uOf())*W)+'px';
-  el('fshape').setAttribute('d','M'+(22-w).toFixed(1)+' '+bot.toFixed(1)+' C'+(22-w).toFixed(1)+' '+k.toFixed(1)+' '+(22+w).toFixed(1)+' '+k.toFixed(1)+' '+(22+w).toFixed(1)+' '+bot.toFixed(1)+'Z');
-  const hi=el('fhi');hi.setAttribute('cx',(22-w*0.35).toFixed(1));hi.setAttribute('cy',(bot-h*0.62).toFixed(1));hi.setAttribute('rx',(w*0.28).toFixed(1));hi.setAttribute('ry',Math.max(1.2,h*0.16).toFixed(1))};
+  const D=[22,5, 26,12,34,20,34,28, 34,34.6,28.6,40,22,40, 15.4,40,10,34.6,10,28, 10,20,18,12,22,5],
+        S=[22,8, 26.3,12.3,30.7,17.7,35,22, 30.7,26.3,26.3,31.7,22,36, 17.7,31.7,13.3,26.3,9,22, 13.3,17.7,17.7,12.3,22,8];
+  const P=D.map((v,i)=>(v+(S[i]-v)*g).toFixed(1));
+  el('fshape').setAttribute('d','M'+P[0]+' '+P[1]+' C'+P.slice(2,8).join(' ')+' C'+P.slice(8,14).join(' ')+' C'+P.slice(14,20).join(' ')+' C'+P.slice(20,26).join(' ')+'Z')};
  const setU=x=>{const r=ft.getBoundingClientRect(),W=r.width-44;let u=1-(x-r.left-22)/W;u=Math.min(1,Math.max(0,u));cfg.flow=0.1+(FMAX-0.1)*u;applyCfg();window.__flowUI();save()};
  fv.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();fv.setPointerCapture(e.pointerId);setU(e.clientX);
    const mv=ev=>setU(ev.clientX),up=()=>{fv.removeEventListener('pointermove',mv);fv.removeEventListener('pointerup',up);fv.removeEventListener('pointercancel',up)};
@@ -687,7 +691,7 @@ function onMotion(e){const g=e.accelerationIncludingGravity;if(!g||g.x==null||g.
 addEventListener('devicemotion',onMotion);
 function askSensor(){if(askedPerm)return;askedPerm=true;try{if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission==='function')DeviceMotionEvent.requestPermission().catch(()=>{})}catch(e){}}
 function refreshSeg(){el('tiltS').classList.toggle('on',cfg.tilt!=='joy');el('tiltJ').classList.toggle('on',cfg.tilt==='joy')}
-function applyMode(){el('joyW').style.display=JOY?'block':'none';el('zeroB').style.display=JOY?'none':'block';layout();setTilt(0,0);refreshSeg()}
+function applyMode(){el('joyW').style.display=JOY?'block':'none';el('zeroB').style.display=JOY?'none':'flex';layout();setTilt(0,0);refreshSeg()}
 const switchMode=m=>{cfg.tilt=m;save();try{localStorage.removeItem('pour-nosens')}catch(e){}resetKeys();location.reload()};
 el('tiltS').onclick=()=>{if(cfg.tilt!=='joy'&&!NOSENS)return;switchMode('sensor')};
 el('tiltJ').onclick=()=>{if(cfg.tilt==='joy')return;switchMode('joy')};
