@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#141414">
-<title>Краска</title>
+<title>Paint</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{--dock:150px;--sw:34px;--gap:9px;--joy:78px;--flw:230px}
+html{--dock:150px;--sw:34px;--gap:9px;--joy:78px;--flw:264px}
 html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
 #cv{position:fixed;left:0;top:0;width:100%;height:calc(100% - var(--dock));display:block;touch-action:none}
 #reset{position:fixed;right:30px;top:30px;z-index:2;opacity:0;pointer-events:none;transition:opacity .2s;width:40px;height:40px}
@@ -43,14 +43,14 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .ic{width:28px;height:28px;border-radius:10px;background:#202020;border:1px solid #2e2e2e;color:#ddd;display:grid;place-items:center;cursor:pointer;padding:0}
 .ic svg{width:16px;height:16px}
 #grip{position:absolute;left:0;right:0;top:0;height:20px;display:flex;justify-content:center;align-items:center;cursor:grab;touch-action:none}
-#grip::before{content:"";width:22px;height:4px;border-radius:2px;background:#666}
+#grip::before{content:"";width:30px;height:12px;background:radial-gradient(circle,rgba(255,255,255,.28) 1.1px,transparent 1.6px) 0 0/6px 6px}
 #corner{position:absolute;right:-9px;bottom:-9px;width:26px;height:26px;border-radius:50%;background:#2a2a2a;border:1px solid #3a3a3a;display:grid;place-items:center;touch-action:none;cursor:nwse-resize}
 #corner svg{width:12px;height:12px}
 
 .mv{position:fixed;left:0;top:0;z-index:2;display:flex;flex-direction:column;align-items:center;gap:2px;transition:left .18s,top .18s}
 .mv.drag{transition:none}
 .grab{width:56px;height:26px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:grab}
-.grab::before{content:"";width:28px;height:5px;border-radius:3px;background:#8d877e}
+.grab::before{content:"";width:30px;height:12px;background:radial-gradient(circle,rgba(255,255,255,.3) 1.1px,transparent 1.6px) 0 0/6px 6px}
 #joy{position:relative;width:var(--joy);height:var(--joy);border-radius:50%;background:rgba(22,22,22,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);z-index:2;touch-action:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 #joy::before{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:rgba(255,255,255,.25)}
 #knob{position:absolute;left:50%;top:50%;width:calc(var(--joy)*.4);height:calc(var(--joy)*.4);margin:calc(var(--joy)*-.2);border-radius:50%;background:#e8e8e8;box-shadow:0 3px 10px rgba(0,0,0,.4);transition:transform .15s}
@@ -88,14 +88,15 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .seg button{flex:1;height:44px;border-radius:12px;border:1px solid #303030;background:#242424;color:#ddd;font-size:14px;cursor:pointer}
 .seg button.on{background:#ececec;color:#141414;border-color:#ececec}
 #joyW{display:none}
-#flowW{flex-direction:row;align-items:center;gap:0;width:var(--flw);height:42px;background:rgba(22,22,22,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
-#flowW .grab.gv{width:22px;height:100%;flex:none}
-#flowW .grab.gv::before{width:4px;height:20px}
-#fv{flex:1;min-width:0;height:100%;display:flex;align-items:center;gap:10px;padding:0 14px 0 2px;color:#8d877e;touch-action:none}
-#fv svg{width:16px;height:16px;flex:none}
+#flowW{flex-direction:row;align-items:center;gap:0;width:var(--flw);height:46px}
+#flowW .grab.gv{width:24px;height:100%;flex:none}
+#flowW .grab.gv::before{width:12px;height:30px}
+#fv{flex:1;min-width:0;height:100%;display:flex;align-items:center;padding:0 6px 0 2px;touch-action:none}
 #ft{position:relative;flex:1;min-width:0;height:100%;touch-action:none}
-#ft::before{content:"";position:absolute;top:50%;left:0;right:0;height:10px;margin-top:-5px;border-radius:5px;background:linear-gradient(90deg,#3a3a3a,#9a9a9a)}
-#fthumb{position:absolute;top:50%;width:30px;height:30px;margin-top:-15px;border-radius:50%;background:#fff;border:3px solid #141414;box-shadow:0 1px 5px rgba(0,0,0,.5)}
+#ft::before{content:"";position:absolute;top:50%;left:0;right:0;height:18px;margin-top:-9px;background:linear-gradient(90deg,#3c3c3c,#b4b4b4);clip-path:polygon(0 42%,100% 0,100% 100%,0 58%)}
+#fthumb{position:absolute;top:50%;width:34px;height:34px;margin-top:-17px;border-radius:50%;background:#f4f4f4;box-shadow:0 1px 6px rgba(0,0,0,.45)}
+#langs{display:flex;gap:5px;margin:10px 6px 0}
+#langs .sz{flex:1;height:32px!important}
 #menu .ttl{margin:12px 6px 4px}
 #menu .row{margin:0 6px}#menu .row label{width:96px;font-size:13px}
 #menu .seg{margin:4px 6px}#menu .seg button{height:38px;font-size:13px}
@@ -110,36 +111,37 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 <body>
 <canvas id="cv"></canvas>
 <div id="pal"><div id="grip"></div><div id="corner"><svg viewBox="0 0 12 12" fill="none" stroke="#bbb" stroke-width="1.6" stroke-linecap="round"><path d="M11 4 4 11M11 8 8 11"/></svg></div>
-  <button class="ic" id="gear" aria-label="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button></div>
-<div class="mv" id="flowW"><div class="grab gv"></div><div id="fv" aria-label="Текучесть"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg><div id="ft"><div id="fthumb"></div></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 9c3-3 6 3 9 0s6 3 9 0M3 16c3-3 6 3 9 0s6 3 9 0"/></svg></div></div>
+  <button class="ic" id="gear" data-ia="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button></div>
+<div class="mv" id="flowW"><div class="grab gv"></div><div id="fv" data-ia="flow" aria-label="Flow"><div id="ft"><div id="fthumb"></div></div></div></div>
 <div class="mv" id="joyW"><div class="grab"></div><div id="joy"><div id="knob"></div></div></div>
-<button class="ic" id="reset" aria-label="Выровнять холст"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg></button>
-<button class="ic" id="burger" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button>
+<button class="ic" id="reset" data-ia="reset" aria-label="Reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg></button>
+<button class="ic" id="burger" data-ia="menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button>
 <div id="menu">
-  <button class="mi" id="m-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></svg>Сохранить PNG</button>
+  <button class="mi" id="m-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></svg><span data-i="save"></span></button>
   <div id="sizes"></div>
-  <div class="ttl">Краска</div>
-  <div class="row"><label>Высыхание<small id="tauV"></small></label><div class="sl"><div class="tr"></div><input type="range" id="dryS" min="3" max="60" step="1"></div></div>
-  <div class="row"><label>Струя<small>тонкая → толстая</small></label><div class="sl"><div class="tr"></div><input type="range" id="bsz" min="0.25" max="3.5" step="0.01"></div></div>
-  <div class="ttl">Наклон</div>
-  <div class="seg"><button id="tiltS">Датчик</button><button id="tiltJ">Джойстик</button></div>
-  <div class="row"><label>Отклик</label><div class="sl"><div class="tr"></div><input type="range" id="sens" min="1" max="8" step="0.1"></div></div>
-  <div class="btns"><button id="clr">Очистить холст</button></div>
+  <div class="ttl" data-i="paint"></div>
+  <div class="row"><label><span data-i="dry"></span><small id="tauV"></small></label><div class="sl"><div class="tr"></div><input type="range" id="dryS" min="3" max="60" step="1"></div></div>
+  <div class="row"><label><span data-i="jet"></span><small data-i="jetNote"></small></label><div class="sl"><div class="tr"></div><input type="range" id="bsz" min="0.25" max="3.5" step="0.01"></div></div>
+  <div class="ttl" data-i="tilt"></div>
+  <div class="seg"><button id="tiltS" data-i="sensor"></button><button id="tiltJ" data-i="joystick"></button></div>
+  <div class="row"><label data-i="resp"></label><div class="sl"><div class="tr"></div><input type="range" id="sens" min="1" max="8" step="0.1"></div></div>
+  <div id="langs"></div>
+  <div class="btns"><button id="clr" data-i="clear"></button></div>
 </div>
 <div id="toast"><span id="toastT"></span><b id="toastB"></b></div>
-<div id="shot"><img id="shotImg" alt=""><p>Если файл не скачался — удерживай картинку и выбери «Сохранить».</p><div class="btns"><button class="pri" id="shotClose">Закрыть</button></div></div>
+<div id="shot"><img id="shotImg" alt=""><p data-i="shotHint"></p><div class="btns"><button class="pri" id="shotClose" data-i="close"></button></div></div>
 <div id="back"></div>
 <div id="sheet">
-  <div class="ttl">Цвет <span id="selN" style="text-transform:none;letter-spacing:0;color:#aaa"></span></div>
+  <div class="ttl"><span data-i="color"></span> <span id="selN" style="text-transform:none;letter-spacing:0;color:#aaa"></span></div>
   <div id="ssw"></div>
   <div id="note"></div>
   <div class="chips" id="pals" style="margin:8px 0 6px"></div>
   <div id="ed">
-    <div class="row"><label>Температура</label><div class="sl"><div class="tr" id="b0"></div><input type="range" id="t" min="0" max="1.125" step="0.002"></div></div>
-    <div class="row"><label>Насыщенность</label><div class="sl"><div class="tr" id="b1"></div><input type="range" id="s" min="0" max="1" step="0.002"></div></div>
-    <div class="row"><label>Яркость</label><div class="sl"><div class="tr" id="b2"></div><input type="range" id="v" min="0.06" max="1" step="0.002"></div></div>
+    <div class="row"><label data-i="temp"></label><div class="sl"><div class="tr" id="b0"></div><input type="range" id="t" min="0" max="1.125" step="0.002"></div></div>
+    <div class="row"><label data-i="sat"></label><div class="sl"><div class="tr" id="b1"></div><input type="range" id="s" min="0" max="1" step="0.002"></div></div>
+    <div class="row"><label data-i="bri"></label><div class="sl"><div class="tr" id="b2"></div><input type="range" id="v" min="0.06" max="1" step="0.002"></div></div>
   </div>
-  <div class="btns"><button class="pri" id="done">Готово</button></div>
+  <div class="btns"><button class="pri" id="done" data-i="done"></button></div>
 </div>
 <script>
 // ---- gel paint simulation (mass-conserving, no texture) ----
@@ -465,12 +467,26 @@ void main(){
 }
 
 (()=>{
+
+// ---------- languages ----------
+const T={
+ru:{title:'Краска',save:'Сохранить PNG',screen:'Экран',paint:'Краска',dry:'Высыхание',dryN:n=>'самой жидкой ~'+n+' с',jet:'Струя',jetNote:'тонкая → толстая',tilt:'Наклон',sensor:'Датчик',joystick:'Джойстик',resp:'Отклик',clear:'Очистить холст',shotHint:'Если файл не скачался — удерживай картинку и выбери «Сохранить».',close:'Закрыть',color:'Цвет',temp:'Температура',sat:'Насыщенность',bri:'Яркость',done:'Готово',white:'Белый',black:'Чёрный',wash:'Смывка',washNote:'Смывка: води пальцем, и краска смывается.',saving:'Сохраняю…',saved:d=>'PNG '+d+' сохранён',declined:'Сохранение отменено',noDl:'Скачивание недоступно — удерживай картинку',ready:d=>'PNG '+d+' готов',open:'Открыть',fail:'Не получилось сохранить',canvas:'Холст ',settings:'Настройки',flow:'Текучесть',reset:'Выровнять холст',menu:'Меню'},
+en:{title:'Paint',save:'Save PNG',screen:'Screen',paint:'Paint',dry:'Drying',dryN:n=>'runniest ~'+n+' s',jet:'Stream',jetNote:'thin → thick',tilt:'Tilt',sensor:'Sensor',joystick:'Joystick',resp:'Response',clear:'Clear canvas',shotHint:'If the file did not download, press and hold the picture and choose Save.',close:'Close',color:'Colour',temp:'Hue',sat:'Saturation',bri:'Brightness',done:'Done',white:'White',black:'Black',wash:'Wash',washNote:'Wash: swipe a finger to wash paint away.',saving:'Saving…',saved:d=>'PNG '+d+' saved',declined:'Save cancelled',noDl:'Download unavailable — press and hold the picture',ready:d=>'PNG '+d+' ready',open:'Open',fail:'Could not save',canvas:'Canvas ',settings:'Settings',flow:'Flow',reset:'Level the canvas',menu:'Menu'},
+es:{title:'Pintura',save:'Guardar PNG',screen:'Pantalla',paint:'Pintura',dry:'Secado',dryN:n=>'la más líquida ~'+n+' s',jet:'Chorro',jetNote:'fino → grueso',tilt:'Inclinación',sensor:'Sensor',joystick:'Joystick',resp:'Respuesta',clear:'Borrar lienzo',shotHint:'Si el archivo no se descargó, mantén pulsada la imagen y elige Guardar.',close:'Cerrar',color:'Color',temp:'Tono',sat:'Saturación',bri:'Brillo',done:'Listo',white:'Blanco',black:'Negro',wash:'Lavar',washNote:'Lavar: desliza el dedo y la pintura se limpia.',saving:'Guardando…',saved:d=>'PNG '+d+' guardado',declined:'Guardado cancelado',noDl:'Descarga no disponible: mantén pulsada la imagen',ready:d=>'PNG '+d+' listo',open:'Abrir',fail:'No se pudo guardar',canvas:'Lienzo ',settings:'Ajustes',flow:'Fluidez',reset:'Nivelar el lienzo',menu:'Menú'},
+de:{title:'Farbe',save:'PNG speichern',screen:'Bildschirm',paint:'Farbe',dry:'Trocknung',dryN:n=>'flüssigste ~'+n+' s',jet:'Strahl',jetNote:'dünn → dick',tilt:'Neigung',sensor:'Sensor',joystick:'Joystick',resp:'Empfindlichkeit',clear:'Leinwand leeren',shotHint:'Wurde die Datei nicht geladen, halte das Bild gedrückt und wähle Speichern.',close:'Schließen',color:'Farbe',temp:'Farbton',sat:'Sättigung',bri:'Helligkeit',done:'Fertig',white:'Weiß',black:'Schwarz',wash:'Abwaschen',washNote:'Abwaschen: mit dem Finger wischen, die Farbe löst sich.',saving:'Speichere…',saved:d=>'PNG '+d+' gespeichert',declined:'Speichern abgebrochen',noDl:'Download nicht möglich – Bild gedrückt halten',ready:d=>'PNG '+d+' fertig',open:'Öffnen',fail:'Speichern fehlgeschlagen',canvas:'Leinwand ',settings:'Einstellungen',flow:'Fließfähigkeit',reset:'Leinwand ausrichten',menu:'Menü'},
+fr:{title:'Peinture',save:'Enregistrer en PNG',screen:'Écran',paint:'Peinture',dry:'Séchage',dryN:n=>'la plus fluide ~'+n+' s',jet:'Jet',jetNote:'fin → épais',tilt:'Inclinaison',sensor:'Capteur',joystick:'Joystick',resp:'Réactivité',clear:'Effacer la toile',shotHint:'Si le fichier ne s’est pas téléchargé, appuie longuement sur l’image et choisis Enregistrer.',close:'Fermer',color:'Couleur',temp:'Teinte',sat:'Saturation',bri:'Luminosité',done:'Terminé',white:'Blanc',black:'Noir',wash:'Effacer',washNote:'Effacer : glisse le doigt pour laver la peinture.',saving:'Enregistrement…',saved:d=>'PNG '+d+' enregistré',declined:'Enregistrement annulé',noDl:'Téléchargement impossible : appuie longuement sur l’image',ready:d=>'PNG '+d+' prêt',open:'Ouvrir',fail:'Échec de l’enregistrement',canvas:'Toile ',settings:'Réglages',flow:'Fluidité',reset:'Redresser la toile',menu:'Menu'},
+th:{title:'สี',save:'บันทึก PNG',screen:'หน้าจอ',paint:'สี',dry:'การแห้ง',dryN:n=>'สีเหลวสุด ~'+n+' วิ',jet:'ลำสี',jetNote:'บาง → หนา',tilt:'การเอียง',sensor:'เซนเซอร์',joystick:'จอยสติ๊ก',resp:'ความไว',clear:'ล้างผืนผ้าใบ',shotHint:'หากไฟล์ไม่ถูกดาวน์โหลด ให้กดภาพค้างแล้วเลือกบันทึก',close:'ปิด',color:'สี',temp:'โทนสี',sat:'ความอิ่มสี',bri:'ความสว่าง',done:'เสร็จ',white:'ขาว',black:'ดำ',wash:'ล้างสี',washNote:'ล้างสี: ลากนิ้วเพื่อล้างสีออก',saving:'กำลังบันทึก…',saved:d=>'บันทึก PNG '+d+' แล้ว',declined:'ยกเลิกการบันทึก',noDl:'ดาวน์โหลดไม่ได้ กดภาพค้างไว้',ready:d=>'PNG '+d+' พร้อมแล้ว',open:'เปิด',fail:'บันทึกไม่สำเร็จ',canvas:'ผืนผ้าใบ ',settings:'ตั้งค่า',flow:'ความเหลว',reset:'ปรับผืนผ้าใบให้ตรง',menu:'เมนู'}};
+const PNEN={'Яркая':'Bright','Пастель':'Pastel','Земля':'Earth','Море':'Sea','Закат':'Sunset','Киберпанк':'Cyberpunk','Вейпорвейв':'Vaporwave','Синтвейв':'Synthwave','Дракула':'Dracula','Токио ночью':'Tokyo night','Ризограф':'Risograph','Баухаус':'Bauhaus','Мондриан':'Mondrian','70-е':"'70s",'Осень':'Autumn','Моранди':'Morandi','Аврора':'Aurora','Чернила':'Ink','Лес':'Forest','Конфеты':'Candy','Кислота':'Acid'};
+const LANGS=['ru','en','es','de','fr','th'];
+let L='en';try{L=localStorage.getItem('pour-lang')||''}catch(e){}
+if(!T[L]){L='en';for(const l of (navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'en'])){const c=String(l).toLowerCase().slice(0,2);if(T[c]){L=c;break}}}
+const t=(k,...x)=>{const v=(T[L]&&T[L][k]!==undefined?T[L]:T.en)[k];return typeof v==='function'?v(...x):v};
 const cv=document.getElementById('cv');
 let TRAV=27,JOY=false,NOSENS=false;try{NOSENS=localStorage.getItem('pour-nosens')==='1';const d=JSON.parse(localStorage.getItem('pour1')||'null');if((d&&d.cfg&&d.cfg.tilt==='joy')||NOSENS)JOY=true}catch(e){}
 function layout(){const VH=innerHeight,VW=innerWidth;
   const sw=Math.round(Math.min(36,Math.max(26,Math.floor((VW-126-12)/7.4)))),gap=Math.round(sw*0.28),flw=VW-60-66;
-  const palH=24+2*sw+gap+6,dock=30+palH+8+42;
-  const s=document.documentElement.style;s.setProperty('--dock',dock+'px');s.setProperty('--sw',sw+'px');s.setProperty('--gap',gap+'px');s.setProperty('--joy',78+'px');s.setProperty('--flw',Math.min(236,Math.round(VW*0.58))+'px');
+  const palH=24+2*sw+gap+6,dock=30+palH+8+46;
+  const s=document.documentElement.style;s.setProperty('--dock',dock+'px');s.setProperty('--sw',sw+'px');s.setProperty('--gap',gap+'px');s.setProperty('--joy',78+'px');s.setProperty('--flw',Math.min(270,Math.round(VW*0.66))+'px');
   TRAV=78*0.3;window.__lay={dock,sw,gap,joy:78,palH,flw}}
 layout();addEventListener('resize',layout);let GL=null;try{GL=makeGL(cv)}catch(e){console.warn(e);GL=null}
 const ctx=GL?null:cv.getContext('2d');
@@ -540,22 +556,22 @@ const WASH=NS+2; // index of the wash tool
 const DROP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"/></svg>';
 function mkSw(parent,list,onTap,before){
   for(let k=0;k<NS+3;k++){const b=document.createElement('button');b.className='sw';
-    if(k===WASH){b.innerHTML=DROP;b.style.background='#26343c';b.title='Смывка'}
+    if(k===WASH){b.innerHTML=DROP;b.style.background='#26343c';b.title=t('wash')}
     b.onclick=()=>onTap(k);before?parent.insertBefore(b,before):parent.appendChild(b);list.push(b)}
   list[NS+1].style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.18)'}
 const dots=[],sdots=[];
 mkSw(el('pal'),dots,k=>{if(sel===k&&k<NS+2&&!isOpen())openSheet(true);else{sel=k;refresh()}},el('gear'));
 mkSw(el('ssw'),sdots,k=>{sel=k;refresh()});
 PRESETS.forEach(([name,cols])=>{const c=document.createElement('button');c.className='chip';
-  c.innerHTML='<i>'+cols.map(o=>'<b style="background:'+css(rgbOf(o))+'"></b>').join('')+'</i>'+name;
+  c.innerHTML='<i>'+cols.map(o=>'<b style="background:'+css(rgbOf(o))+'"></b>').join('')+'</i><span data-pn="'+name+'">'+name+'</span>';
   c.onclick=()=>{slots=cols.map(o=>({...o}));refresh();save()};el('pals').appendChild(c)});
-const SNAME=[...Array(NS)].map((_,i)=>'Цвет '+(i+1)).concat(['Белый','Чёрный','Смывка']);
+const SNAME=i=>i<NS?t('color')+' '+(i+1):[t('white'),t('black'),t('wash')][i-NS];
 function refresh(){
   for(let k=0;k<NS;k++)dots[k].style.background=sdots[k].style.background=css(rgbOf(slots[k]));
   for(let k=0;k<2;k++)dots[NS+k].style.background=sdots[NS+k].style.background=css(rgbOf(ext[k]));
   for(const D of [dots,sdots])D.forEach((d,k)=>d.classList.toggle('on',k===sel));
-  const on=sel<NS+2;el('ed').classList.toggle('off',!on);el('selN').textContent=SNAME[sel];
-  el('note').textContent=on?'':'Смывка: води пальцем, и краска смывается.';
+  const on=sel<NS+2;el('ed').classList.toggle('off',!on);el('selN').textContent=SNAME(sel);
+  el('note').textContent=on?'':t('washNote');
   el('note').style.display=on?'none':'block';
   const o=sel<NS?slots[sel]:sel<NS+2?ext[sel-NS]:slots[0];
   const R=sel===NS?{s:[0,.5],v:[.7,1]}:sel===NS+1?{s:[0,.6],v:[0,.3]}:{s:[0,1],v:[.06,1]};
@@ -565,11 +581,21 @@ function refresh(){
   el('b0').style.background='linear-gradient(90deg,'+st.join(',')+')';
   el('b1').style.background='linear-gradient(90deg,'+css(hsv(o.t*HMAX,R.s[0],o.v))+','+css(hsv(o.t*HMAX,R.s[1],o.v))+')';
   el('b2').style.background='linear-gradient(90deg,'+css(hsv(o.t*HMAX,o.s,R.v[0]))+','+css(hsv(o.t*HMAX,o.s,R.v[1]))+')';
-  el('bsz').value=cfg.bsz;el('dryS').value=cfg.dry;el('sens').value=cfg.sens;el('tauV').textContent='самой жидкой ~'+cfg.dry+' с'}
+  el('bsz').value=cfg.bsz;el('dryS').value=cfg.dry;el('sens').value=cfg.sens;el('tauV').textContent=t('dryN',cfg.dry)}
 ['t','s','v'].forEach(k=>el(k).addEventListener('input',e=>{const o=sel<NS?slots[sel]:sel<NS+2?ext[sel-NS]:null;if(o){o[k]=+e.target.value;refresh();save()}}));
-[['bsz','bsz'],['dryS','dry'],['sens','sens']].forEach(([id,k])=>el(id).addEventListener('input',e=>{cfg[k]=+e.target.value;applyCfg();save();el('tauV').textContent='самой жидкой ~'+cfg.dry+' с'}));
-function syncCfg(){el('bsz').value=cfg.bsz;el('dryS').value=cfg.dry;el('sens').value=cfg.sens;el('tauV').textContent='самой жидкой ~'+cfg.dry+' с'}
+[['bsz','bsz'],['dryS','dry'],['sens','sens']].forEach(([id,k])=>el(id).addEventListener('input',e=>{cfg[k]=+e.target.value;applyCfg();save();el('tauV').textContent=t('dryN',cfg.dry)}));
+function syncCfg(){el('bsz').value=cfg.bsz;el('dryS').value=cfg.dry;el('sens').value=cfg.sens;el('tauV').textContent=t('dryN',cfg.dry)}
 const FMAX=1.1;   // right end: a bit more runny than before
+function applyLang(){
+  document.documentElement.lang=L;document.title=t('title');
+  document.querySelectorAll('[data-i]').forEach(n=>n.textContent=t(n.dataset.i));
+  document.querySelectorAll('[data-ia]').forEach(n=>n.setAttribute('aria-label',t(n.dataset.ia)));
+  document.querySelectorAll('[data-pn]').forEach(n=>{n.textContent=L==='ru'?n.dataset.pn:(PNEN[n.dataset.pn]||n.dataset.pn)});
+  const w=document.querySelector('.sw[title]');if(w)w.title=t('wash');
+  refresh();syncCfg();
+  document.querySelectorAll('#langs .sz').forEach(b=>b.classList.toggle('on',b.dataset.l===L))}
+{const box=el('langs');for(const l of LANGS){const b=document.createElement('button');b.className='sz';b.dataset.l=l;b.textContent=l.toUpperCase();
+  b.onclick=()=>{L=l;try{localStorage.setItem('pour-lang',l)}catch(e){}applyLang();if(menu.classList.contains('open'))buildSizes()};box.appendChild(b)}}
 function applyCfg(){if(sim){const u=Math.min(1,Math.max(0,(cfg.flow-0.1)/(FMAX-0.1)));sim.flow=cfg.flow;sim.tau=(cfg.dry/3)*(0.04+0.96*Math.pow(u/0.4,1.5))}}  // paint sets after ~3 time constants
 const sheet=el('sheet'),isOpen=()=>sheet.classList.contains('open');
 function openSheet(v){if(v)menu.classList.remove('open');sheet.classList.toggle('open',v);el('back').classList.toggle('open',v)}
@@ -620,13 +646,13 @@ function movable(box,key,def){
       box.classList.remove('drag');place(true);try{localStorage.setItem(key,JSON.stringify(P))}catch(e){}};
     g.addEventListener('pointermove',mv);g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up)});
   addEventListener('resize',()=>place(true));requestAnimationFrame(()=>place(true))}
-movable(el('flowW'),'pour-flow4',(w,h,VW,VH)=>({x:Math.round((VW-w)/2),y:VH-30-window.__lay.palH-8-42-4}));
+movable(el('flowW'),'pour-flow5',(w,h,VW,VH)=>({x:Math.round((VW-w)/2),y:VH-30-window.__lay.palH-8-46-4}));
 movable(el('joyW'),'pour-joy8',(w,h,VW,VH)=>({x:VW-30-w-4,y:VH-30-38-12-h-60}));
 // ---------- one vertical slider: up = runny and slow to dry, down = thick and sets fast ----------
 {const ft=el('ft'),th=el('fthumb'),fv=el('fv');
  const uOf=()=>Math.min(1,Math.max(0,(cfg.flow-0.1)/(FMAX-0.1)));
- window.__flowUI=()=>{const W=ft.clientWidth-30;th.style.left=(uOf()*W)+'px'};
- const setU=x=>{const r=ft.getBoundingClientRect(),W=r.width-30;let u=(x-r.left-15)/W;u=Math.min(1,Math.max(0,u));cfg.flow=0.1+(FMAX-0.1)*u;applyCfg();window.__flowUI();save()};
+ window.__flowUI=()=>{const W=ft.clientWidth-34;th.style.left=(uOf()*W)+'px'};
+ const setU=x=>{const r=ft.getBoundingClientRect(),W=r.width-34;let u=(x-r.left-17)/W;u=Math.min(1,Math.max(0,u));cfg.flow=0.1+(FMAX-0.1)*u;applyCfg();window.__flowUI();save()};
  fv.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();fv.setPointerCapture(e.pointerId);setU(e.clientX);
    const mv=ev=>setU(ev.clientX),up=()=>{fv.removeEventListener('pointermove',mv);fv.removeEventListener('pointerup',up);fv.removeEventListener('pointercancel',up)};
    fv.addEventListener('pointermove',mv);fv.addEventListener('pointerup',up);fv.addEventListener('pointercancel',up)});
@@ -641,7 +667,7 @@ dragOn(joy,(dx,dy,st,ev)=>{const r=joy.getBoundingClientRect();setTilt((ev.clien
     const r=joy.getBoundingClientRect();setTilt((e.clientX-r.left-r.width/2)/TRAV,(e.clientY-r.top-r.height/2)/TRAV)});
 // ---------- tilt: phone sensor (default) or on-screen joystick ----------
 let sx=0,sy=0,tsx=0,tsy=0,nx0=0,ny0=0,hasN=false,sensorSeen=false,askedPerm=false;
-const resetKeys=()=>{try{['pour-pal10','pour-flow4','pour-joy8'].forEach(k=>localStorage.removeItem(k))}catch(e){}};
+const resetKeys=()=>{try{['pour-pal10','pour-flow5','pour-joy8'].forEach(k=>localStorage.removeItem(k))}catch(e){}};
 function onMotion(e){const g=e.accelerationIncludingGravity;if(!g||g.x==null||g.y==null)return;
   if(!sensorSeen){sensorSeen=true;if(NOSENS&&cfg.tilt!=='joy'){try{localStorage.removeItem('pour-nosens')}catch(e){}resetKeys();location.reload();return}}
   const fx=-g.x/9.81,fy=g.y/9.81,q=(((screen.orientation&&screen.orientation.angle)||window.orientation||0)%360+360)%360;
@@ -708,19 +734,19 @@ function closeMenu(){menu.classList.remove('open');if(!isOpen())back.classList.r
 el('burger').onclick=()=>{const v=!menu.classList.contains('open');if(v){buildSizes();openSheet(false);syncCfg()}menu.classList.toggle('open',v);back.classList.toggle('open',v)};
 let busy=false;
 let DL=null;try{if(window.claude&&claude.use)claude.use('downloads').then(d=>{DL=d}).catch(()=>{})}catch(e){}
-el('m-save').onclick=async()=>{if(busy)return;busy=true;closeMenu();toast('Сохраняю…');
+el('m-save').onclick=async()=>{if(busy)return;busy=true;closeMenu();toast(t('saving'));
   try{const b=await renderPNG(),name=fileName(),dim=exportSize().join('×');
     if(DL){
-      try{await DL.save({filename:name,data:b});toast('PNG '+dim+' сохранён')}
-      catch(e){const c=e&&e.code;if(c==='declined')toast('Сохранение отменено');else{openShot(b);toast('Скачивание недоступно — удерживай картинку')}}}
+      try{await DL.save({filename:name,data:b});toast(t('saved',dim))}
+      catch(e){const c=e&&e.code;if(c==='declined')toast(t('declined'));else{openShot(b);toast(t('noDl'))}}}
     else{const u=URL.createObjectURL(b),an=document.createElement('a');an.href=u;an.download=name;document.body.appendChild(an);an.click();an.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);
-      toast('PNG '+dim+' готов','Открыть',()=>openShot(b))}}
-  catch(e){toast('Не получилось сохранить')}busy=false};
+      toast(t('ready',dim),t('open'),()=>openShot(b))}}
+  catch(e){toast(t('fail'))}busy=false};
 function buildSizes(){const box=el('sizes');box.innerHTML='';
   for(const s of SIZES){
     const b=document.createElement('button');b.className='sz'+(s.id===cs.id?' on':'');
     const r=s.w?s.w/s.h:(cv.clientWidth/cv.clientHeight),iw=r>=1?22:22*r,ih=r>=1?22/r:22;
-    b.textContent=s.n;
+    b.textContent=s.id==='scr'?t('screen'):s.n;
     b.onclick=()=>pickSize(s);box.appendChild(b)}}
 function pickSize(s){
   if(s.id===cs.id){closeMenu();return}
@@ -732,7 +758,7 @@ function pickSize(s){
       for(let x=0;x<nx;x++){const ox=(x+.5)*BW/nx-dx;if(ox<0||ox>=oW)continue;const i=sy*old.nx+Math.min(old.nx-1,Math.floor(ox/oW*old.nx)),j=y*nx+x;
         for(const k of ['H','R','G','B','Wt','D','HD','RD','GD','BD','WD'])sim[k][j]=old[k][i]}}}
   view.a=0;view.z=1;view.ox=0;view.oy=0;el('reset').classList.remove('show');
-  closeMenu();toast('Холст '+s.n)}
+  closeMenu();toast(t('canvas')+(s.id==='scr'?t('screen'):s.n))}
 
 // ---------- fingers ----------
 // one finger pours; two fingers put down together rotate / zoom / move the board
@@ -814,7 +840,7 @@ function frame(now){
     ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
     ctx.fillStyle='#ece8e0';ctx.fillRect(0,0,BW,BH);if(drawRect)ctx.drawImage(off,0,0,off.width,off.height,...drawRect);ctx.restore()}}
   requestAnimationFrame(frame)}
-refresh();requestAnimationFrame(()=>placePal(true));requestAnimationFrame(frame);
+applyLang();requestAnimationFrame(()=>placePal(true));requestAnimationFrame(frame);
 })();
 </script>
 </body>
