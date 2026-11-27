@@ -555,9 +555,9 @@ const grow=c=>{c=c.slice();const a=c[1],b=c[3];
   const m=c[2];c.push({t:wrapT(m.t+30/HMAX),s:m.s*.8,v:Math.min(1,m.v+.05)});return c};
 PRESETS[0][1].push(P(130,.78,.68),P(24,.92,.96),P(272,.72,.6));
 for(let i=1;i<PRESETS.length;i++)PRESETS[i][1]=grow(PRESETS[i][1]);
-let slots,sel=0,cfg={flow:0.49,fv:3,dry:20,bsz:1.8,bv:2,tilt:'sensor',sens:4.5},ext=[{t:0,s:0,v:250/255},{t:0,s:0,v:.02}];  // ext = custom white, custom black
+let slots,sel=0,cfg={flow:0.75,fv:4,dry:20,bsz:1.8,bv:2,tilt:'sensor',sens:4.5},ext=[{t:0,s:0,v:250/255},{t:0,s:0,v:.02}];  // ext = custom white, custom black
 try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.slots&&d.slots.length===NS-1)d.slots.push({...PRESETS[0][1][NS-1]});
-if(d&&d.slots&&d.slots.length===NS){slots=d.slots;if(d.cfg&&d.cfg.bv!==2)delete d.cfg.bsz;if(d.cfg&&d.cfg.fv!==3)delete d.cfg.flow;Object.assign(cfg,d.cfg||{});cfg.bv=2;cfg.fv=3;delete cfg.tau;if(d.ext&&d.ext.length===2)ext=d.ext}}catch(e){}
+if(d&&d.slots&&d.slots.length===NS){slots=d.slots;if(d.cfg&&d.cfg.bv!==2)delete d.cfg.bsz;if(d.cfg&&d.cfg.fv!==4)delete d.cfg.flow;Object.assign(cfg,d.cfg||{});cfg.bv=2;cfg.fv=4;delete cfg.tau;if(d.ext&&d.ext.length===2)ext=d.ext}}catch(e){}
 if(!slots)slots=PRESETS[0][1].map(o=>({...o}));
 const save=()=>{try{localStorage.setItem('pour1',JSON.stringify({slots,cfg,ext}))}catch(e){}};
 const rgbOf=o=>hsv(o.t*HMAX,o.s,o.v);
@@ -792,7 +792,7 @@ function pickSize(s){
 // one finger pours; two fingers put down together rotate / zoom / move the board
 let hinted=false;
 const ptr=new Map(),act=new Map();let pair=null;
-const brushR=()=>Math.max(2.2,Math.min(sim.nx,sim.ny)*0.018*cfg.bsz);   // starting drop: thin
+const brushR=()=>Math.max(1.65,Math.min(sim.nx,sim.ny)*0.0135*cfg.bsz);   // starting drop: thin
 function pick(n){if(sel<NS)return(sel+n)%NS;if(n===0)return sel;return(n-1)%NS}
 const scr=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
 function toBoard(sx,sy){const c=Math.cos(view.a),s=Math.sin(view.a),dx=sx-(cv.clientWidth/2+view.ox),dy=sy-(cv.clientHeight/2+view.oy);
@@ -828,7 +828,7 @@ function pourFrame(a,dt){
   const [x,y]=toGrid(a.p.sx,a.p.sy),r0=brushR();
   const dx=x-a.px,dy=y-a.py,d=Math.hypot(dx,dy),n=Math.max(1,Math.ceil(d/0.7));
   a.dw=a.dw*Math.exp(-d*0.12)+dt;                         // holding still -> the drop swells, faster and faster
-  const g=Math.min(1,Math.pow(a.dw/0.85,1.7)),r=r0*(1+5.5*g);
+  const g=Math.min(1,Math.pow(a.dw/0.6,1.7)),r=r0*(1+7.5*g);
   if(a.k===WASH){for(let k=1;k<=n;k++)wash(sim,a.px+dx*k/n,a.py+dy*k/n,Math.max(r,r0*2.5)*1.2,0.32)}
   else{const col=colOf(a.k),amt=(0.14+0.22*g)*cfg.bsz/n*Math.min(3,dt*60);   // same paint per second at any frame rate
     for(let k=1;k<=n;k++)deposit(sim,a.px+dx*k/n,a.py+dy*k/n,r,Math.max(amt,0.014),col)}
