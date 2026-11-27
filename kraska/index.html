@@ -482,7 +482,7 @@ void main(){
 }
 
 (()=>{
-
+if(/[?&]reset\b/.test(location.search)){try{Object.keys(localStorage).filter(k=>k.indexOf('pour')===0).forEach(k=>localStorage.removeItem(k))}catch(e){}location.replace(location.pathname);return}
 // ---------- languages ----------
 const T={
 ru:{title:'Краска',zero:'Обнулить наклон',zeroed:'Ноль наклона задан',save:'Сохранить PNG',screen:'Экран',paint:'Краска',dry:'Высыхание',dryN:n=>'самой жидкой ~'+n+' с',jet:'Струя',jetNote:'тонкая → толстая',tilt:'Наклон',sensor:'Датчик',joystick:'Джойстик',resp:'Отклик',clear:'Очистить холст',shotHint:'Если файл не скачался — удерживай картинку и выбери «Сохранить».',close:'Закрыть',color:'Цвет',temp:'Температура',sat:'Насыщенность',bri:'Яркость',done:'Готово',white:'Белый',black:'Чёрный',wash:'Смывка',washNote:'Смывка: води пальцем, и краска смывается.',saving:'Сохраняю…',saved:d=>'PNG '+d+' сохранён',declined:'Сохранение отменено',noDl:'Скачивание недоступно — удерживай картинку',ready:d=>'PNG '+d+' готов',open:'Открыть',fail:'Не получилось сохранить',canvas:'Холст ',settings:'Настройки',flow:'Текучесть',reset:'Выровнять холст',menu:'Меню'},
