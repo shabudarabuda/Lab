@@ -38,6 +38,7 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 #pdots{display:flex;justify-content:center;gap:5px;margin:0 0 6px;height:5px}
 #pdots i{width:4px;height:4px;border-radius:50%;background:#555;transition:background .15s}
 #pdots i.on{background:#bbb}
+#pals .chip.on{background:#363636;border-color:#cfcfcf}
 #pals .chip{scroll-snap-align:start;flex-direction:column;align-items:flex-start;gap:6px;border-radius:10px;padding:8px 10px;min-width:0}
 #pals .chip span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px}
 #hint{position:fixed;left:20px;right:80px;top:28%;text-align:center;color:rgba(40,36,30,.5);font-size:14px;pointer-events:none;transition:opacity .6s}
@@ -516,7 +517,7 @@ const HX=h=>{const n=parseInt(h.slice(1),16),r=(n>>16&255)/255,g=(n>>8&255)/255,
   return P(H,mx?d/mx:0,Math.max(.06,mx))};
 const PH=(n,l)=>[n,l.split(' ').map(HX)];
 const PRESETS=[
-  ['Яркая',[P(0,.88,.86),P(48,.92,.97),P(222,.9,.78),P(322,.82,.78),P(186,.9,.78)]],
+  ['Яркая',[P(4,.74,.98),P(46,.86,1),P(208,.76,.96),P(335,.56,.98),P(182,.68,.88)]],
   ['Пастель',[P(350,.38,.97),P(45,.42,.98),P(205,.38,.95),P(280,.3,.92),P(150,.34,.9)]],
   ['Земля',[P(35,.78,.8),P(14,.72,.62),P(70,.5,.52),P(24,.62,.34),P(225,.45,.38)]],
   ['Море',[P(190,.85,.72),P(212,.88,.5),P(168,.6,.72),P(236,.7,.34),P(44,.36,.96)]],
@@ -553,13 +554,13 @@ const grow=c=>{c=c.slice();const a=c[1],b=c[3];
   c.push({t:wrapT(a.t+25/HMAX),s:a.s*.75,v:Math.min(1,a.v+.06)});
   c.push({t:wrapT(b.t-25/HMAX),s:Math.min(1,b.s*.9),v:Math.max(.08,b.v*.65)});
   const m=c[2];c.push({t:wrapT(m.t+30/HMAX),s:m.s*.8,v:Math.min(1,m.v+.05)});return c};
-PRESETS[0][1].push(P(130,.78,.68),P(24,.92,.96),P(272,.72,.6));
+PRESETS[0][1].push(P(150,.62,.86),P(26,.82,1),P(262,.5,.95));
 for(let i=1;i<PRESETS.length;i++)PRESETS[i][1]=grow(PRESETS[i][1]);
 let slots,sel=0,cfg={flow:0.75,fv:4,dry:20,bsz:1.8,bv:2,tilt:'sensor',sens:4.5},ext=[{t:0,s:0,v:250/255},{t:0,s:0,v:.02}];  // ext = custom white, custom black
 try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.slots&&d.slots.length===NS-1)d.slots.push({...PRESETS[0][1][NS-1]});
-if(d&&d.slots&&d.slots.length===NS){slots=d.slots;if(d.cfg&&d.cfg.bv!==2)delete d.cfg.bsz;if(d.cfg&&d.cfg.fv!==4)delete d.cfg.flow;Object.assign(cfg,d.cfg||{});cfg.bv=2;cfg.fv=4;delete cfg.tau;if(d.ext&&d.ext.length===2)ext=d.ext}}catch(e){}
+if(d&&d.slots&&d.slots.length===NS){if(d.pv===2)slots=d.slots;if(d.cfg&&d.cfg.bv!==2)delete d.cfg.bsz;if(d.cfg&&d.cfg.fv!==4)delete d.cfg.flow;Object.assign(cfg,d.cfg||{});cfg.bv=2;cfg.fv=4;delete cfg.tau;if(d.pv===2&&d.ext&&d.ext.length===2)ext=d.ext}}catch(e){}
 if(!slots)slots=PRESETS[0][1].map(o=>({...o}));
-const save=()=>{try{localStorage.setItem('pour1',JSON.stringify({slots,cfg,ext}))}catch(e){}};
+const save=()=>{try{localStorage.setItem('pour1',JSON.stringify({slots,cfg,ext,pv:2}))}catch(e){}};
 const rgbOf=o=>hsv(o.t*HMAX,o.s,o.v);
 const absOf=c=>c.map(v=>-Math.log(0.05+0.9*v));
 const slotCol=k=>({A:absOf(rgbOf(slots[k])),w:0});
@@ -584,9 +585,11 @@ PRESETS.forEach(([name,cols])=>{const c=document.createElement('button');c.class
 {const pl=el('pals'),pd=el('pdots');let np=0;
   const build=()=>{const n=Math.max(1,Math.ceil(pl.scrollWidth/pl.clientWidth));if(!pl.clientWidth||n===np)return;np=n;pd.innerHTML='';for(let k=0;k<n;k++)pd.appendChild(document.createElement('i'));mark()};
   const mark=()=>{const mx=pl.scrollWidth-pl.clientWidth,k=mx>0?Math.round(pl.scrollLeft/mx*(np-1)):0;[...pd.children].forEach((d,i)=>d.classList.toggle('on',i===k))};
-  pl.addEventListener('scroll',mark,{passive:true});window.__pdots=()=>{build();mark()}}
+  pl.addEventListener('scroll',mark,{passive:true});window.__pdots=()=>{build();const on=pl.querySelector('.chip.on');if(on&&on.offsetLeft+on.offsetWidth>pl.clientWidth+pl.scrollLeft||on&&on.offsetLeft<pl.scrollLeft)pl.scrollLeft=Math.max(0,on.offsetLeft-8);mark()}}
 const SNAME=i=>i<NS?t('color')+' '+(i+1):[t('white'),t('black'),t('wash')][i-NS];
+const palIdx=()=>PRESETS.findIndex(([,c])=>c.every((o,i)=>slots[i]&&Math.abs(slots[i].t-o.t)<1e-4&&Math.abs(slots[i].s-o.s)<1e-4&&Math.abs(slots[i].v-o.v)<1e-4));
 function refresh(){
+  {const pi=palIdx();[...el('pals').children].forEach((c,i)=>c.classList.toggle('on',i===pi))}
   {const po=sel<NS?slots[sel]:sel<NS+2?ext[sel-NS]:null;document.documentElement.style.setProperty('--pc',po?css(rgbOf(po)):'#8aa4b0')}
   for(let k=0;k<NS;k++)dots[k].style.background=sdots[k].style.background=css(rgbOf(slots[k]));
   for(let k=0;k<2;k++)dots[NS+k].style.background=sdots[NS+k].style.background=css(rgbOf(ext[k]));
