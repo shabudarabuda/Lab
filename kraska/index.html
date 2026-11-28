@@ -42,7 +42,7 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 #pals .chip{scroll-snap-align:start;flex-direction:column;align-items:flex-start;gap:6px;border-radius:10px;padding:8px 10px;min-width:0}
 #pals .chip span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px}
 #hint{position:fixed;left:20px;right:80px;top:28%;text-align:center;color:rgba(40,36,30,.5);font-size:14px;pointer-events:none;transition:opacity .6s}
-#pal{position:fixed;left:0;top:0;display:grid;gap:var(--gap);padding:20px 13px 8px;background:rgba(22,22,22,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:14px;z-index:2;box-shadow:0 6px 24px rgba(0,0,0,.25);touch-action:none;transition:left .18s,top .18s}
+#pal{position:fixed;left:0;top:0;display:flex;gap:10px;padding:20px 12px 8px 12px;background:rgba(22,22,22,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:14px;z-index:2;box-shadow:0 6px 24px rgba(0,0,0,.25);touch-action:none;transition:left .18s,top .18s}
 #pal.drag{transition:none}
 .sw{width:var(--sw);height:var(--sw);border-radius:50%;border:none;padding:0;position:relative;flex:none;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);display:grid;place-items:center;color:#cfe6f2}
 .sw.on::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #ececec}
@@ -93,7 +93,7 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .seg button{flex:1;height:44px;border-radius:10px;border:1px solid #303030;background:#242424;color:#ddd;font-size:14px;cursor:pointer}
 .seg button.on{background:#ececec;color:#141414;border-color:#ececec}
 #joyW{display:none}
-#flowW{flex-direction:row;align-items:center;gap:0;width:var(--flw);height:46px;background:rgba(32,32,32,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:10px}
+#flowW{flex-direction:row;align-items:center;gap:0;width:var(--flw);height:42px;background:rgba(32,32,32,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:10px}
 #flowW .grab.gv{width:22px;height:100%;flex:none}
 #flowW .grab.gv::before{width:12px;height:30px}
 #fv{flex:1;min-width:0;height:100%;display:flex;align-items:center;padding:0 6px 0 2px;touch-action:none}
@@ -117,12 +117,15 @@ html,body{margin:0;height:100%;background:#141414;color:#ececec;font:15px/1.3 sy
 .btns button.pri{background:#ececec;color:#141414;border-color:#ececec}
 #gear{width:var(--sw);height:var(--sw);border-radius:50%;place-self:center;margin:0}
 #gear svg{width:46%;height:46%}
+#pscroll{display:grid;grid-template-rows:repeat(2,var(--sw));grid-auto-flow:column;grid-auto-columns:var(--sw);gap:var(--gap);width:var(--pw);overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-snap-type:x proximity;touch-action:pan-x;padding:4px;margin:-4px;scroll-padding-left:4px}
+#pscroll::-webkit-scrollbar{display:none}
+#pscroll .sw{scroll-snap-align:start}
+#ptools{display:grid;grid-template-rows:repeat(2,var(--sw));gap:var(--gap);flex:none;padding:4px 0;margin:-4px 0}
 </style>
 </head>
 <body>
 <canvas id="cv"></canvas>
-<div id="pal"><div id="grip"></div>
-  <button class="ic" id="gear" data-ia="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button></div>
+<div id="pal"><div id="grip"></div><div id="pscroll"></div><div id="ptools"><button class="ic" id="gear" data-ia="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button></div></div>
 <div class="mv" id="flowW"><div class="grab gv"></div><div id="fv" data-ia="flow" aria-label="Flow"><div id="ft"><div id="fthumb"><svg viewBox="0 0 44 44"><path id="fshape" d=""/></svg></div></div></div></div>
 <div class="mv" id="joyW"><div class="grab"></div><div id="joy"><div id="knob"></div></div></div>
 <button class="ic" id="reset" data-ia="reset" aria-label="Reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg></button>
@@ -497,10 +500,11 @@ const t=(k,...x)=>{const v=(T[L]&&T[L][k]!==undefined?T[L]:T.en)[k];return typeo
 const cv=document.getElementById('cv');
 let TRAV=27,JOY=false,NOSENS=false;try{NOSENS=localStorage.getItem('pour-nosens')==='1';const d=JSON.parse(localStorage.getItem('pour1')||'null');if((d&&d.cfg&&d.cfg.tilt==='joy')||NOSENS)JOY=true}catch(e){}
 function layout(){const VH=innerHeight,VW=innerWidth;
-  const sw=Math.round(Math.min(38,Math.max(26,Math.floor((VW-48)/9.3)))),gap=Math.round(sw*0.3),flw=VW-60-66;
-  const palH=20+2*sw+gap+8,dock=22+palH+6+46+8;
-  const s=document.documentElement.style;s.setProperty('--dock',dock+'px');s.setProperty('--sw',sw+'px');s.setProperty('--gap',gap+'px');s.setProperty('--joy',78+'px');s.setProperty('--flw',Math.max(120,Math.min(JOY?VW-60-78-12:1e9,Math.min(190,Math.round(VW*0.46))))+'px');
-  TRAV=78*0.3;window.__lay={dock,sw,gap,joy:78,palH,flw}}
+  const sw=Math.round(Math.min(38,Math.max(26,Math.floor((VW-48)/9.3)))),gap=Math.round(sw*0.3),st=sw+gap;
+  const room=VW-40-24-10-sw,k=Math.max(3,Math.floor(room/st-0.5)),pw=Math.round((k+0.5)*st-gap*0.5);   // k full columns + half of the next
+  const palH=20+2*sw+gap+8,FH=42,dock=22+palH+4+FH+8;
+  const s=document.documentElement.style;s.setProperty('--dock',dock+'px');s.setProperty('--sw',sw+'px');s.setProperty('--gap',gap+'px');s.setProperty('--pw',pw+'px');s.setProperty('--joy',78+'px');s.setProperty('--flw',Math.max(120,Math.min(JOY?VW-60-78-12:1e9,Math.min(190,Math.round(VW*0.46))))+'px');
+  TRAV=78*0.3;window.__lay={dock,sw,gap,joy:78,palH,FH}}
 layout();addEventListener('resize',layout);let GL=null;try{GL=makeGL(cv)}catch(e){console.warn(e);GL=null}
 const ctx=GL?null:cv.getContext('2d');
 const el=id=>document.getElementById(id);
@@ -546,14 +550,15 @@ const PRESETS=[
   PH('Material','#f44336 #ffc107 #4caf50 #2196f3 #9c27b0'),
   PH('Кислота','#ccff00 #ff3cac #784ba0 #2b86c5 #00ffd5'),
 ];
-const NS=10;
+const NS=12;
 const wrapT=t=>((t%1.125)+1.125)%1.125;
 const grow=c=>{c=c.slice();const a=c[1],b=c[3];
   c.push({t:wrapT(a.t+25/HMAX),s:a.s*.75,v:Math.min(1,a.v+.06)});
   c.push({t:wrapT(b.t-25/HMAX),s:Math.min(1,b.s*.9),v:Math.max(.08,b.v*.65)});
   const m=c[2];c.push({t:wrapT(m.t+30/HMAX),s:m.s*.8,v:Math.min(1,m.v+.05)});
-  const f=c[0],e=c[4];c.push({t:wrapT(f.t-20/HMAX),s:f.s*.7,v:Math.min(1,f.v)});c.push({t:e.t,s:Math.min(1,e.s*1.05),v:Math.max(.08,e.v*.55)});return c};
-PRESETS[0][1].push(P(150,.62,.86),P(26,.82,1),P(262,.5,.95),P(22,.55,.66),P(228,.78,.52));
+  const f=c[0],e=c[4];c.push({t:wrapT(f.t-20/HMAX),s:f.s*.7,v:Math.min(1,f.v)});c.push({t:e.t,s:Math.min(1,e.s*1.05),v:Math.max(.08,e.v*.55)});
+  const y=c[1],r=c[3];c.push({t:y.t,s:Math.min(1,y.s*1.05),v:Math.max(.08,y.v*.6)});c.push({t:wrapT(r.t+18/HMAX),s:r.s*.6,v:Math.min(1,r.v+.08)});return c};
+PRESETS[0][1].push(P(150,.62,.86),P(26,.82,1),P(262,.5,.95),P(22,.55,.66),P(228,.78,.52),P(88,.65,.8),P(345,.7,.55));
 for(let i=1;i<PRESETS.length;i++)PRESETS[i][1]=grow(PRESETS[i][1]);
 let slots,sel=0,cfg={flow:0.75,fv:4,dry:20,bsz:1.8,bv:2,tilt:'sensor',sens:4.5},ext=[{t:0,s:0,v:250/255},{t:0,s:0,v:.02}];  // ext = custom white, custom black
 try{const d=JSON.parse(localStorage.getItem('pour1')||'null');if(d&&d.pv===2&&d.slots&&d.slots.length<NS)for(let i=d.slots.length;i<NS;i++)d.slots.push({...PRESETS[0][1][i]});
@@ -576,7 +581,8 @@ function mkSw(parent,list,onTap,before){
     b.onclick=()=>onTap(k);before?parent.insertBefore(b,before):parent.appendChild(b);list.push(b)}
   list[NS+1].style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.18)'}
 const dots=[],sdots=[];
-mkSw(el('pal'),dots,k=>{if(sel===k&&k<NS+2&&!isOpen())openSheet(true);else{sel=k;refresh()}},el('gear'));
+mkSw(el('pscroll'),dots,k=>{if(sel===k&&k<NS+2&&!isOpen())openSheet(true);else{sel=k;refresh()}});
+el('ptools').insertBefore(dots[WASH],el('gear'));
 mkSw(el('ssw'),sdots,k=>{sel=k;refresh()});
 PRESETS.forEach(([name,cols])=>{const c=document.createElement('button');c.className='chip';
   c.innerHTML='<i>'+cols.map(o=>'<b style="background:'+css(rgbOf(o))+'"></b>').join('')+'</i><span data-pn="'+name+'">'+name+'</span>';
@@ -627,18 +633,16 @@ el('gear').onclick=()=>openSheet(!isOpen());el('done').onclick=()=>openSheet(fal
 el('clr').onclick=()=>{for(const a of [sim.H,sim.R,sim.G,sim.B,sim.Wt,sim.D,sim.HD,sim.RD,sim.GD,sim.BD,sim.WD,sim.FX,sim.FY])a.fill(0);openSheet(false);closeMenu()};
 // ---------- movable palette ----------
 const pal=el('pal');
-let PS={cols:null,x:null,y:null};
-try{const d=JSON.parse(localStorage.getItem('pour-pal12')||'null');if(d)PS=d}catch(e){}
-const savePS=()=>{try{localStorage.setItem('pour-pal12',JSON.stringify(PS))}catch(e){}};
+let PS={cols:null,x:null,y:null},palAuto=true;
+try{const d=JSON.parse(localStorage.getItem('pour-pal13')||'null');if(d){PS=d;palAuto=false}}catch(e){}
+const savePS=()=>{try{localStorage.setItem('pour-pal13',JSON.stringify(PS))}catch(e){}};
 const ITEMS=NS+4;
 const LAY={get sw(){return window.__lay.sw},get gap(){return window.__lay.gap}};
 function placePal(snap){
-  if(PS.cols==null)PS.cols=7;
-  pal.style.gridTemplateColumns='repeat('+PS.cols+','+LAY.sw+'px)';
   const w=pal.offsetWidth,h=pal.offsetHeight,VW=innerWidth,VH=innerHeight,m=20;
-  if(PS.x===null){PS.x=Math.round((VW-w)/2);PS.y=VH-h-22}
+  if(PS.x===null||palAuto){PS.x=Math.round((VW-w)/2);PS.y=VH-h-22}
   let x=Math.min(Math.max(m,PS.x),VW-w-m),y=Math.min(Math.max(m,PS.y),VH-h-16);
-  if(snap){const S=56;if(x<S)x=m;if(VW-w-x<S)x=VW-w-m;if(y<S)y=m;if(VH-h-y<S)y=VH-h-22}
+  if(snap&&!palAuto){const S=56;if(x<S)x=m;if(VW-w-x<S)x=VW-w-m;if(y<S)y=m;if(VH-h-y<S)y=VH-h-22}
   PS.x=x;PS.y=y;pal.style.left=x+'px';pal.style.top=y+'px'}
 function dragOn(node,onMove,onEnd,onStart){
   node.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();node.setPointerCapture(e.pointerId);
@@ -646,25 +650,25 @@ function dragOn(node,onMove,onEnd,onStart){
     const mv=ev=>onMove(ev.clientX-sx,ev.clientY-sy,st,ev);
     const up=ev=>{node.removeEventListener('pointermove',mv);node.removeEventListener('pointerup',up);node.removeEventListener('pointercancel',up);onEnd(ev)};
     node.addEventListener('pointermove',mv);node.addEventListener('pointerup',up);node.addEventListener('pointercancel',up)})}
-dragOn(el('grip'),(dx,dy,st)=>{pal.classList.add('drag');PS.x=st.x+dx;PS.y=st.y+dy;placePal(false)},()=>{pal.classList.remove('drag');placePal(true);savePS()});
+dragOn(el('grip'),(dx,dy,st)=>{pal.classList.add('drag');palAuto=false;PS.x=st.x+dx;PS.y=st.y+dy;placePal(false)},()=>{pal.classList.remove('drag');palAuto=false;placePal(true);savePS()});
 addEventListener('resize',()=>placePal(true));
 // ---------- movable widgets (joystick, dryer) ----------
 function movable(box,key,def){
-  let P=null;try{P=JSON.parse(localStorage.getItem(key)||'null')}catch(e){}
+  let P=null,auto=true;try{P=JSON.parse(localStorage.getItem(key)||'null');if(P)auto=false}catch(e){}
   const place=snap=>{const w=box.offsetWidth,h=box.offsetHeight,VW=innerWidth,VH=innerHeight,m=30;
-    if(!P)P=def(w,h,VW,VH);
+    if(!P||auto)P=def(w,h,VW,VH);
     let x=Math.min(Math.max(m,P.x),VW-w-m),y=Math.min(Math.max(m,P.y),VH-h-m);
     if(snap){const S=56;if(x<S)x=m;if(VW-w-x<S)x=VW-w-m;if(y<S)y=m;if(VH-h-y<S)y=VH-h-m}
     P={x,y};box.style.left=x+'px';box.style.top=y+'px'};
   const g=box.querySelector('.grab');
   g.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();g.setPointerCapture(e.pointerId);
-    const sx=e.clientX,sy=e.clientY,st={...P};box.classList.add('drag');
+    const sx=e.clientX,sy=e.clientY,st={...P};auto=false;box.classList.add('drag');
     const mv=ev=>{P={x:st.x+ev.clientX-sx,y:st.y+ev.clientY-sy};place(false)};
     const up=()=>{g.removeEventListener('pointermove',mv);g.removeEventListener('pointerup',up);g.removeEventListener('pointercancel',up);
       box.classList.remove('drag');place(true);try{localStorage.setItem(key,JSON.stringify(P))}catch(e){}};
     g.addEventListener('pointermove',mv);g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up)});
   addEventListener('resize',()=>place(true));requestAnimationFrame(()=>place(true))}
-movable(el('flowW'),'pour-flow7',(w,h,VW,VH)=>({x:JOY?30:Math.round((VW-w)/2),y:VH-22-window.__lay.palH-6-46}));
+movable(el('flowW'),'pour-flow8',(w,h,VW,VH)=>({x:JOY?30:Math.round((VW-w)/2),y:VH-22-window.__lay.palH-4-window.__lay.FH}));
 movable(el('joyW'),'pour-joy9',(w,h,VW,VH)=>({x:VW-30-w-4,y:VH-30-window.__lay.palH-8-4-h}));
 // ---------- one vertical slider: up = runny and slow to dry, down = thick and sets fast ----------
 {const ft=el('ft'),th=el('fthumb'),fv=el('fv');
@@ -691,7 +695,7 @@ dragOn(joy,(dx,dy,st,ev)=>{const r=joy.getBoundingClientRect();setTilt((ev.clien
     const r=joy.getBoundingClientRect();setTilt((e.clientX-r.left-r.width/2)/TRAV,(e.clientY-r.top-r.height/2)/TRAV)});
 // ---------- tilt: phone sensor (default) or on-screen joystick ----------
 let sx=0,sy=0,tsx=0,tsy=0,nx0=0,ny0=0,hasN=false,sensorSeen=false,askedPerm=false;
-const resetKeys=()=>{try{['pour-pal12','pour-flow7','pour-joy9','pour-burger2'].forEach(k=>localStorage.removeItem(k))}catch(e){}};
+const resetKeys=()=>{try{['pour-pal13','pour-flow8','pour-joy9','pour-burger3'].forEach(k=>localStorage.removeItem(k))}catch(e){}};
 function onMotion(e){const g=e.accelerationIncludingGravity;if(!g||g.x==null||g.y==null)return;
   if(!sensorSeen){sensorSeen=true;if(NOSENS&&cfg.tilt!=='joy'){try{localStorage.removeItem('pour-nosens')}catch(e){}resetKeys();location.reload();return}}
   const fx=-g.x/9.81,fy=g.y/9.81,q=(((screen.orientation&&screen.orientation.angle)||window.orientation||0)%360+360)%360;
@@ -758,16 +762,16 @@ function closeMenu(){menu.classList.remove('open');if(!isOpen())back.classList.r
 function placeMenu(){const b=el('burger').getBoundingClientRect(),VW=innerWidth,VH=innerHeight,w=Math.min(300,VW-60),s=menu.style;
   s.right='auto';s.left=Math.min(Math.max(16,b.left),VW-16-w)+'px';
   if(b.top>VH/2){s.top='auto';s.bottom=(VH-b.top+8)+'px'}else{s.bottom='auto';s.top=(b.bottom+8)+'px'}}
-{const B=el('burger');let BP=null,held=false,tm=0,sx=0,sy=0,st=null;try{BP=JSON.parse(localStorage.getItem('pour-burger2')||'null')}catch(e){}
+{const B=el('burger');let BP=null,userSet=false,held=false,tm=0,sx=0,sy=0,st=null;try{BP=JSON.parse(localStorage.getItem('pour-burger3')||'null');userSet=!!BP}catch(e){}
   const put=()=>{const w=38,VW=innerWidth,VH=innerHeight,L=window.__lay;
-    if(!BP)BP={x:JOY?VW-16-w:30,y:VH-22-L.palH-6-46+2};
+    if(!userSet){const f=el('flowW'),ft=parseFloat(f.style.top);BP={x:JOY?VW-16-w:30,y:isFinite(ft)&&f.offsetHeight?ft+(f.offsetHeight-w)/2:VH-22-L.palH-4-L.FH+2}}
     BP={x:Math.min(Math.max(16,BP.x),VW-16-w),y:Math.min(Math.max(16,BP.y),VH-16-w)};B.style.left=BP.x+'px';B.style.top=BP.y+'px'};
-  put();addEventListener('resize',put);window.__putBurger=put;
+  put();requestAnimationFrame(()=>requestAnimationFrame(put));setTimeout(put,300);addEventListener('resize',()=>requestAnimationFrame(put));window.__putBurger=put;
   B.addEventListener('pointerdown',e=>{held=false;sx=e.clientX;sy=e.clientY;st={...BP};clearTimeout(tm);
-    tm=setTimeout(()=>{held=true;try{B.setPointerCapture(e.pointerId)}catch(_){}if(navigator.vibrate)navigator.vibrate(8);menu.classList.remove('open');back.classList.remove('open')},280)});
+    tm=setTimeout(()=>{held=true;userSet=true;try{B.setPointerCapture(e.pointerId)}catch(_){}if(navigator.vibrate)navigator.vibrate(8);menu.classList.remove('open');back.classList.remove('open')},280)});
   B.addEventListener('pointermove',e=>{if(!held){if(Math.hypot(e.clientX-sx,e.clientY-sy)>10)clearTimeout(tm);return}
     BP={x:st.x+e.clientX-sx,y:st.y+e.clientY-sy};put()});
-  const end=()=>{clearTimeout(tm);if(held){try{localStorage.setItem('pour-burger2',JSON.stringify(BP))}catch(e){}setTimeout(()=>{held=false},0)}};
+  const end=()=>{clearTimeout(tm);if(held){try{localStorage.setItem('pour-burger3',JSON.stringify(BP))}catch(e){}setTimeout(()=>{held=false},0)}};
   B.addEventListener('pointerup',end);B.addEventListener('pointercancel',end);
   B.addEventListener('click',e=>{if(held){e.stopImmediatePropagation();e.preventDefault()}},true);
   B.addEventListener('contextmenu',e=>e.preventDefault())}
